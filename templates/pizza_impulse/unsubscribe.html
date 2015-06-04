@@ -1,0 +1,60 @@
+{% extends "forgot-password.html" %}
+{% block topcontent %}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-login" onload="unSubscribe()"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <!--<a class="settings-link" href="/settings/"><img class="settings-link__icon" src="{{STATIC_URL}}images/svgs/settings.svg" alt="Change your settings" /></a>-->
+            <h1 class="pi-brand">
+                <img class="pi-brand__logo" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+                <img class="pi-brand__name" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+            </h1>
+{% endblock %}
+{% block middlecontent %}
+{% if show_page == "yes" %}
+<input class="login-form__text-input" type="text" name="email" placeholder="Registered Email" value="" style="left:10%;width:80%;position:relative;"/>
+                {% csrf_token %}
+                <button id="submit_button" class="login-form__login-button">Unsubscribe</button>
+                <p id="response_to_user" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;"></p>
+{% elif show_page == "no" %}
+ <p id="response_to_user" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">Sorry, you do not have access to this page</p>
+{% endif %}
+{% endblock %}
+{% block javascriptcontent %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+        <script>
+        function unSubscribe(){
+            $("#submit_button").on("click",function(){
+            if($("[name='email']").val().length > 0){
+            $.post("/unsubscribe2/", {
+                                                   email:$("[name='email']").val(),
+                                                   csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                                   }, function(data){
+                                                              $("#response_to_user").html(data);
+                                                               if(data.indexOf("Sorry")>=0){
+                                                             $("[name='email'],#submit_button").hide();
+                                                               }
+                                                                    });
+        }
+        else if($("[name='email']").val().length == 0){
+         $("#response_to_user").html("Please enter your email address");
+        }
+        });
+        }
+        </script>
+    </body>
+</html>
+{% endblock %}

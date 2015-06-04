@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}/build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-sorry"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+        <div class="middle-stripe"></div>
+        <article class="result-box">
+            <img class="result-box__brand" src="{{STATIC_URL}}/images/svgs/PI-red.svg" alt="Pizza Impulse" />
+            <h1 class="result-box__sorry">Sorry!</h1>
+            <p class="result-box__detail">{{request.GET.response_reason_text}}</p>
+            {% if request.GET.show_phone_number_or_not == "yes" %}
+            <a class="result-box__call-button" href="#">{{request.GET.merchant_phone_number}}</a>
+            {% elif request.GET.show_phone_number_or_not == "no" %}
+            {% endif %}
+            {% if request.GET.show_logout_or_login == "logout" %}
+            <button class="result-box__exit-button" onclick="logOut()" >Exit</button>
+            {% elif request.GET.show_logout_or_login == "login" %}
+            <button class="result-box__exit-button" onclick="logOut()" >Log in again and go to settings to edit your credit card info</button>
+            {% endif %}
+        </article>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}/vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}/build/bundle.min.js"></script>
+        <script>
+        function logOut(){
+            window.location.replace("/login/?pizza_order_id={{request.GET.pizza_order_id}}");
+        }
+        </script>
+    </body>
+</html>

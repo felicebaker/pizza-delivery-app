@@ -1,0 +1,230 @@
+{% extends "merchant-home.html" %}
+
+{% block body %}
+
+{% if request.GET.pizza_order_id|length_is:"0"|yesno:"true,false" == "false" %}
+<body onload="findStatusOfSpecPizzaIfAny({{request.GET.pizza_order_id}})">
+{% elif request.POST.pizza_order_id|length_is:"0"|yesno:"true,false" == "false"   %}
+<body onload="findStatusOfSpecPizzaIfAny({{request.POST.pizza_order_id}})">
+{% endif %}
+<div class="jumbotron background_color_red">
+<p class="text-center width_15_percent pull-right"><span class="glyphicon glyphicon-road cursor_pointer color_white" title="Log out" onclick="logOut()"></span><br /><span class="color_white lead cursor_pointer" onclick="logOut()">Logout</span><br /><br /><a class="cursor_pointer" href="/settings/?pizza_order_id={{request.GET.pizza_order_id}}" title="Settings"><span class="glyphicon glyphicon-asterisk color_white"></span><br /><span class="color_white lead cursor_pointer">Settings</span></a></p>
+<br /><br /><br /><br />
+<h1 class="pi-brand width_30_percent center-block">
+      <img class="pi-brand__logo img-responsive width_40_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name img-responsive width_40_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</h1>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+{% csrf_token %}
+<div id="has_not_been_sold_yet_section" class="col-xs-12" style="display:none;">
+<div class="center-block well well-lg width_75_percent cursor_pointer pop_over">
+<p id="timer_para" class="lead text-center margin_top_30px width_75_percent center-block"><span id="timer_begin" class="bg-success"></span><br /><span id="timer_now" class="bg-warning"></span><br /><span id="timer_end" class="bg-danger"></span></p>
+<p id="speculation_pizza_description" class="text-center lead margin_top_30px width_90_percent center-block background_color_red color_white"></p>
+<p id="encourage_prompt" class="lead text-center margin_top_30px width_75_percent center-block">Be the one to purchase this speculation pizza before it's too late!</p>
+<button id="not_interested_button" class="input-lg btn btn-primary center-block margin_top_30px cursor_pointer" onclick="notInterested()">Not Interested...</button>
+<form action="/confirm-spec-pizza-purchase/" method="post">
+<input type='hidden' name='time_now' />
+<input type='hidden' name='pizza_order_id' value="{{request.GET.pizza_order_id}}" />
+<input type='hidden' name='user_id' value='{{request.session.id}}'/>
+<input type='hidden' name='spec_pizza_description' />
+<input type='hidden' name='spec_pizza_price' />
+{% csrf_token %}
+<input type='submit' class="input-lg btn btn-success center-block margin_top_30px cursor_pointer" value="Purchase Now!" />
+</form>
+</div>
+</div>
+<div id="already_been_sold_section" class="col-xs-12" style="display:none;">
+<div class="center-block well well-lg width_75_percent cursor_pointer pop_over">
+<p class="text-center lead margin_top_30px width_75_percent center-block background_color_red color_white">SOLD!</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">Sorry, someone else purchased this pizza!</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">Stay tuned for our future text messages notifying you about speculation pizzas in your area!</p>
+</div>
+</div>
+<div id="vetting_session_over_section" class="col-xs-12" style="display:none;">
+<div class="center-block well well-lg width_75_percent cursor_pointer pop_over">
+<p class="text-center lead margin_top_30px width_75_percent center-block background_color_red color_white">TIME IS UP!</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">Sorry, you have run out of time!</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">Stay tuned for our future text messages notifying you about speculation pizzas in your area.</p>
+</div>
+</div>
+<div id="no_outstanding_spec_pizza_section" class="col-xs-12" style="display:none;">
+<div class="center-block well well-lg width_75_percent cursor_pointer pop_over">
+<p class="text-center lead margin_top_30px width_90_percent center-block background_color_red color_white">COAST IS CLEAR!</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">There are no speculation pizzas in your area at the moment.</p>
+<p class="text-center lead margin_top_30px width_75_percent center-block">Stay tuned for our future text messages notifying you about speculation pizzas in your area!</p>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+
+var continue_to_probe = true;
+
+function findStatusOfSpecPizzaIfAny(number){
+    if(window.location.pathname.length != "/?pizza_order_id=".length){
+    var spec_pizza_status_query = setInterval(function(){
+    if(continue_to_probe == true){
+    $.post("/find-status-of-spec-pizza-if-any/",{
+                                   csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                   pizza_order_id:number,
+                                   user_id:{{request.session.id}},
+                                   time_now:new Date().getTime()
+                                                },function(data){
+                                                    if(data.indexOf("The speculation pizza has not been sold yet.")>=0){
+                                                        $("#already_been_sold_section,#vetting_session_over_section,#no_outstanding_spec_pizza_section").hide(function(){
+                                                            $("#has_not_been_sold_yet_section").show();                                                           
+                                                            continue_to_probe = true;
+                                                            getSpeculationPizzaInfo();    
+                                                        });
+                                                    }
+                                                    else if(data.indexOf("This speculation pizza has already been sold.")>=0){
+                                                        $("#has_not_been_sold_yet_section,#vetting_session_over_section,#no_outstanding_spec_pizza_section").hide(function(){
+                                                            $("#already_been_sold_section").show();
+                                                            continue_to_probe = false;
+                                                        });
+                                                    }
+                                                    else if(data.indexOf("Time has run out! This speculation pizza vetting session is over.")>=0){
+                                                        $("#already_been_sold_section,#has_not_been_sold_yet_section,#no_outstanding_spec_pizza_section").hide(function(){
+                                                            $("#vetting_session_over_section").show();
+                                                            continue_to_probe = false;
+                                                        });
+                                                    }
+                                                    else if((data.indexOf("The pizza order id indicated does not exist.")>=0)||(data.indexOf("There are no speculation pizzas in your area.")>=0)){
+                                                         $("#already_been_sold_section,#has_not_been_sold_yet_section,#vetting_session_over_section").hide(function(){
+                                                            $("#no_outstanding_spec_pizza_section").show();
+                                                            continue_to_probe = false;
+                                                        });                                                    
+                                                    }
+                                                                });
+}
+else if(continue_to_probe == false){
+    clearInterval(spec_pizza_status_query);
+}
+},5000);
+}
+else if(window.location.pathname.length == "/home/?pizza_order_id=".length){
+pageToShowIfNoOrder();
+}
+}
+
+
+
+var already_got_spec_pizza_info = false;
+
+function getSpeculationPizzaInfo(){
+    var time_now = deMilitarizeHours(new Date().getHours())+":"+addLeadingZero(new Date().getMinutes())+":"+ addLeadingZero(new Date().getSeconds())+" "+setToAMOrPM(new Date().getHours());
+    $("#timer_now").html("NOW<span class='text-info'> - </span>"+time_now);
+    {% if request.GET.pizza_order_id|length_is:"0"|yesno:"true,false" == "false" %}
+    var pizza_order_id_number = {{request.GET.pizza_order_id}};
+    {% elif request.POST.pizza_order_id|length_is:"0"|yesno:"true,false" == "false" %}
+    var pizza_order_id_number = {{request.POST.pizza_order_id}};
+    {% elif request.GET.pizza_order_id|length_is:"0"|yesno:"true,false" == "true" and request.POST.pizza_order_id|length_is:"0"|yesno:"true,false" == "true"  %}
+    var pizza_order_id_number = "none";
+    {% endif %}    
+    if(already_got_spec_pizza_info == false){
+    $.get("/get-speculation-pizza-info/", {
+                           pizza_order_id:pizza_order_id_number
+                                          },function(data){                                                
+                                                var get_spec_pizza_info = JSON.parse(data);                                           
+                                                $("#speculation_pizza_description").html("1 "+get_spec_pizza_info.spec_pizza_description+" pizza for $"+get_spec_pizza_info.spec_pizza_price+" !");
+                                                $("[name='spec_pizza_description']").val(get_spec_pizza_info.spec_pizza_description);
+                                                $("[name='spec_pizza_price']").val(get_spec_pizza_info.spec_pizza_price);
+                                                $("#timer_begin").html("START<span class='text-info'> - </span>"+deMilitarizeHours(new Date(get_spec_pizza_info.spec_pizza_vetting_begin).getHours())+":"+addLeadingZero(new Date(get_spec_pizza_info.spec_pizza_vetting_begin).getMinutes())+":"+addLeadingZero(new Date(get_spec_pizza_info.spec_pizza_vetting_begin).getSeconds())+" "+setToAMOrPM(new Date(get_spec_pizza_info.spec_pizza_vetting_begin).getHours()));
+                                                $("#timer_end").html("END<span class='text-info'> - </span>"+deMilitarizeHours(new Date(get_spec_pizza_info.spec_pizza_vetting_end).getHours())+":"+addLeadingZero(new Date(get_spec_pizza_info.spec_pizza_vetting_end).getMinutes())+":"+addLeadingZero(new Date(get_spec_pizza_info.spec_pizza_vetting_end).getSeconds())+" "+setToAMOrPM(new Date(get_spec_pizza_info.spec_pizza_vetting_end).getHours()));
+                                                already_got_spec_pizza_info = true;
+                                                return;
+                                                });
+}
+}
+
+function addLeadingZero(number){
+    if(number<10){
+        return "0"+number;
+    }
+    else{
+        return number;
+    }
+}
+
+function deMilitarizeHours(number){
+    if(number>12){
+        return number-12;
+    }
+    else if(number<=12){
+        return number;
+        if(number == 0){
+            return 12;
+        }
+    }
+}
+
+function setToAMOrPM(number){
+if(number>=12){
+    return "PM";
+}
+else{
+    return "AM";
+}
+}
+
+function notInterested(){
+    {% if request.GET.pizza_order_id|length_is:"0"|yesno:"true,false" == "false" %}
+    var pizza_order_id_number = {{request.GET.pizza_order_id}};
+    {% elif request.POST.pizza_order_id|length_is:"0"|yesno:"true,false" == "false" %}
+    var pizza_order_id_number = {{request.POST.pizza_order_id}};
+    {% else %}
+    var pizza_order_id_number = "none";
+    {% endif %}
+    $.post("/not-interested/",{
+                 csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                 user_id:{{request.session.id}},
+                 pizza_order_id:pizza_order_id_number
+                 },function(data){
+                        logOut();
+                                 });
+}
+
+function logOut(){
+    window.location.replace("/login/?logout_confirmation=Thank+you+for+your+visit!&pizza_order_id={{request.GET.pizza_order_id}}&user_id={{request.session.id}}");
+}
+
+function fillTimeNowInput(){
+    setInterval(function(){
+    var time_now = new Date().getTime();
+    $("[name='time_now']").val(time_now);
+        },5000);
+}
+
+function waitForFullTimeNowValue(){
+    if($("[name='time_now']").val()==""){
+        setTimeout(function(){
+        if($("[name='time_now']").val()!=""){
+            $("#transaction_form").submit();
+        }
+        else{
+            waitforFullTimeNowValue();
+        }
+        },1000);
+    }
+    else{
+        return true;
+    }
+}
+
+function pageToShowIfNoOrder(){
+    $("#already_been_sold_section,#has_not_been_sold_yet_section,#vetting_session_over_section").hide(function(){
+                                                            $("#no_outstanding_spec_pizza_section").show();
+                                                            continue_to_probe = false;
+                                                        });
+}
+</script>
+{% endblock %}
+
+

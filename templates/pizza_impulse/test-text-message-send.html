@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body onload="sendTextMessage()">
+<!--<form action="https://api.twilio.com/2015-04-25/Accounts/AC3f26879104f1288d9919462733ca4d96/Messages/" method="post">
+<input type="text" name="from" value="+16036767211"/><br />
+<input type="text" name="to" value="+16036677144"/><br />
+<input type="text" name="body" value="Hello, this is a test text" />-->
+{% csrf_token %}
+<button>Send Test Text Message !</button>
+<!--</form>-->
+</body>
+<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js'>
+</script>
+<script>
+function sendTextMessage(){
+$("button").on("click",function(){
+$.post("/testtextmessagesend2/", {from:"+16036767211",
+                                  to:"+16036677144",
+                                  body:"Hello there! Pizza Impulse SMS testing.",
+                                  csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val()},
+        function(data){
+        console.log(data);
+});
+});
+}
+</script>
+</html>

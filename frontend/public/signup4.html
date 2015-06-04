@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-signup"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="staged-header">
+                <div class="staged-header__pizza"><img src="/images/svgs/stage4.svg" alt="Stage 4 of 4"/></div>
+                <h1 class="staged-header__title">Pizza Preferences</h1>
+            </header>
+            <!-- doesn't really go to GET settings.html - just here for static client preview -->
+            <form class="preferences-form" action="settings.html" method="get">
+                <h2 class="preferences-form__title">Pick Your Pie</h2>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="cheese" name="cheese" />
+                    <label for="cheese">Cheese</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="pepperoni" name="pepperoni" />
+                    <label for="pepperoni">Pepperoni</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="Sausage" name="Sausage" />
+                    <label for="Sausage">Sausage</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="supreme" name="supreme" />
+                    <label for="supreme">Supreme</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="veggie" name="veggie" />
+                    <label for="veggie">Veggie</label>
+                </div>
+                <div class="preferences-folder">
+                    <a class="js-delivery-times-toggle preferences-folder__trigger">
+                        <img class="preferences-folder__arrow" src="/images/svgs/folder-arrow.svg" />
+                        <h3 class="preferences-folder__title">Edit Delivery Times</h3>
+                    </a>
+                    <div class="preferences-folder__content">
+                        <p class="preferences-folder__note">When do you want pizza?</p>
+                        <div class="preferences-form__radio-button">
+                            <input type="radio" id="when-always" name="when" value="always" checked />
+                            <label class="js-time-selector-toggle" for="when-always">Always</label>
+                        </div>
+                        <div class="preferences-form__radio-button">
+                            <input type="radio" id="when-sometimes" name="when" value="sometimes" />
+                            <label class="js-time-selector-toggle" for="when-sometimes">Choose Times</label>
+                        </div>
+                        <div class="time-selector">
+                            <p class="preferences-folder__note">Choose your pizza times:</p>
+                            <!-- one of these blocks for each day -->
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="monday" name="monday" />
+                                    <label class="js-day-selector-toggle" for="monday">Monday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-day" name="monday-day" />
+                                        <label for="monday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-evening" name="monday-evening" />
+                                        <label for="monday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-late" name="monday-late" />
+                                        <label for="monday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of day block -->
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="tuesday" name="tuesday" />
+                                    <label class="js-day-selector-toggle" for="tuesday">Tuesday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-day" name="tuesday-day" />
+                                        <label for="tuesday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-evening" name="tuesday-evening" />
+                                        <label for="tuesday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-late" name="tuesday-late" />
+                                        <label for="tuesday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="wednesday" name="wednesday" />
+                                    <label class="js-day-selector-toggle" for="wednesday">Wednesday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-day" name="wednesday-day" />
+                                        <label for="wednesday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-evening" name="wednesday-evening" />
+                                        <label for="wednesday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-late" name="wednesday-late" />
+                                        <label for="wednesday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="thursday" name="thursday" />
+                                    <label class="js-day-selector-toggle" for="thursday">Thursday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-day" name="thursday-day" />
+                                        <label for="thursday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-evening" name="thursday-evening" />
+                                        <label for="thursday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-late" name="thursday-late" />
+                                        <label for="thursday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="friday" name="friday" />
+                                    <label class="js-day-selector-toggle" for="friday">friday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-day" name="friday-day" />
+                                        <label for="friday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-evening" name="friday-evening" />
+                                        <label for="friday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-late" name="friday-late" />
+                                        <label for="friday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="saturday" name="saturday" />
+                                    <label class="js-day-selector-toggle" for="saturday">saturday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-day" name="saturday-day" />
+                                        <label for="saturday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-evening" name="saturday-evening" />
+                                        <label for="saturday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-late" name="saturday-late" />
+                                        <label for="saturday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="sunday" name="sunday" />
+                                    <label class="js-day-selector-toggle" for="sunday">sunday</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-day" name="sunday-day" />
+                                        <label for="sunday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-evening" name="sunday-evening" />
+                                        <label for="sunday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-late" name="sunday-late" />
+                                        <label for="sunday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <button class="preferences-form__button">Register</button>
+                <br />
+            </form>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="/build/bundle.min.js"></script>
+    </body>
+</html>

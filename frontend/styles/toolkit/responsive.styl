@@ -1,0 +1,90 @@
+// Responsive/Media Query Mixins
+// idea inspired by inuit.css
+
+// Generate endpoints
+$palm-end = $hand-start - 1px
+$hand-end = $lap-start - 1px
+$lap-end  = $desk-start - 1px
+$desk-end = $wall-start - 1px
+
+// Apply styles starting FROM given breakpoint
+from(breakpoint)
+    if breakpoint is 'palm'
+        @media only screen and (min-width: $palm-start) { {block} } 
+    if breakpoint is 'hand'
+        @media only screen and (min-width: $hand-start) { {block} } 
+    if breakpoint is 'lap'
+        @media only screen and (min-width: $lap-start) { {block} } 
+    if breakpoint is 'desk'
+        @media only screen and (min-width: $desk-start) { {block} } 
+    if breakpoint is 'wall'
+        @media only screen and (min-width: $wall-start) { {block} } 
+
+// Apply styles ONLY to given breakpoint
+only(breakpoint)
+    if breakpoint is 'palm'
+        @media only screen and (min-width: $palm-start) and (max-width: $palm-end) { {block} } 
+    if breakpoint is 'hand'
+        @media only screen and (min-width: $hand-start) and (max-width: $hand-end) { {block} } 
+    if breakpoint is 'lap'
+        @media only screen and (min-width: $lap-start) and (max-width: $lap-end) { {block} } 
+    if breakpoint is 'desk'
+        @media only screen and (min-width: $desk-start) and (max-width: $desk-end) { {block} } 
+    if breakpoint is 'wall'
+        @media only screen and (min-width: $wall-start) { {block} } 
+
+// Apply styles starting BELOW given breakpoint
+below(breakpoint)
+    if breakpoint is 'palm'
+        @media only screen and (max-width: $palm-start - 1px) { {block} } 
+    if breakpoint is 'hand'
+        @media only screen and (max-width: $palm-end) { {block} } 
+    if breakpoint is 'lap'
+        @media only screen and (max-width: $hand-end) { {block} } 
+    if breakpoint is 'desk'
+        @media only screen and (max-width: $lap-end) { {block} } 
+    if breakpoint is 'wall'
+        @media only screen and (max-width: $desk-end) { {block} } 
+
+// Media Query Shortcut 
+when(query)
+    @media only screen and ({query}) { {block} }
+
+// hold on to your hats folks, this gets messy :)
+// http://css-tricks.com/snippets/css/retina-display-media-query/
+retina-and-when(query)
+    prefix = 'min'
+    dppx = 2
+    dpi = dppx * 96
+    @media (-webkit-{prefix}-device-pixel-ratio: dppx) and ({query}),
+        ({prefix}--moz-device-pixel-ratio: dppx) and ({query}),
+        (-o-{prefix}-device-pixel-ratio: dppx/1) and ({query}),
+        ({prefix}-device-pixel-ratio: dppx) and ({query}),
+        ({prefix}-resolution: s('%sdpi', dpi)) and ({query}),
+        ({prefix}-resolution: s('%sdppx', dppx)) and ({query}) { {block} }
+    
+
+// DPI Resolution Mixins
+// adapted from: http://blog.14islands.com/post/37259603246/sass-resolution-mixin
+// NOTE: Should replace this with? http://www.w3.org/blog/CSS/2012/06/14/unprefix-webkit-device-pixel-ratio/
+ifResolution(prefix, dppx)
+    dpi = dppx * 96
+    @media (-webkit-{prefix}-device-pixel-ratio: dppx),
+        ({prefix}--moz-device-pixel-ratio: dppx),
+        (-o-{prefix}-device-pixel-ratio: dppx/1),
+        ({prefix}-device-pixel-ratio: dppx),
+        ({prefix}-resolution: s('%sdpi', dpi)),
+        ({prefix}-resolution: s('%sdppx', dppx)) { {block} }
+
+ifMinResolution(dppx)
+    +ifResolution(min, dppx)
+        {block}
+
+ifMaxResolution(dppx)
+    +ifResolution(max, dppx)
+        {block}
+
+// Retina mixin - just quick easy keyword the above
+retina()
+    +ifResolution(min, 2)
+        {block}

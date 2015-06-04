@@ -1,0 +1,107 @@
+{% block css_and_meta_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<style>
+.width_100_percent{
+    width:100%;
+}
+.width_90_percent{
+    width:90%;
+}
+.width_75_percent{
+    width:75%;
+}
+.width_60_percent{
+    width:60%;
+}
+.width_40_percent{
+    width:40%;
+}
+.width_30_percent{
+    width:30%;
+}
+.width_20_percent{
+    width:20%;
+}
+.width_15_percent{
+    width:15%;
+}
+.cursor_pointer{
+    cursor:pointer;
+}
+.position_fixed{
+    position:fixed;
+}
+.margin_top_30px{
+    margin-top:30px;
+}
+.margin_top_50px{
+    margin-top:50px;
+}
+.margin-left_30px{
+    margin-left:30px;
+}
+.border_bottom_dotted{
+    border-bottom:1px dotted;
+}
+.color_white{
+    color:#FFFFFF;    
+}
+.background_color_red{
+    background-color:#ac222a;
+}
+/*.pi-brand{
+    padding:2em 0;
+    text-align:center;
+}
+.pi-brand__logo{
+    display:block;
+    margin:0 auto;
+    width:9.5em;
+    height:9.5em;
+}
+.pi-brand__name{
+    display:block;
+    margin:0 auto;
+    width:13em;
+    height:auto
+}*/
+</style>
+</head>
+{% endblock %}
+{% block body %}
+<body>
+<div class="jumbotron background_color_red">
+<div class="pi-brand">
+      <img class="pi-brand__logo img-responsive width_20_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name img-responsive width_20_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</div>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+<div class="col-xs-12">
+<form action="/merchant-home/" method="post">
+<input type="text" class="input-lg width_75_percent center-block margin_top_30px" name="user_name" placeholder="Merchant User Name" />
+<input type="password" class="input-lg width_75_percent center-block margin_top_30px" name="password" placeholder="Merchant Password" />
+{% csrf_token %}
+<input type="submit" class="input-lg width_40_percent center-block margin_top_30px" value="Log In" />
+<p class="center-block margin_top_30px lead width_75_percent text-center">{{request.GET.response}}</p>
+<p class="center-block margin_top_30px lead width_75_percent text-center text-success">{{request.GET.logout_confirmation}}</p>
+</form>
+</div>
+</div>
+</div>
+</body>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+</script>
+</html>
+{% endblock %}

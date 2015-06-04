@@ -1,0 +1,205 @@
+{% extends "merchant-home.html" %}
+{% block body %}
+{% if text_sent_or_not == "no" %}
+<body>
+{% elif text_sent_or_not == "yes" %}
+<body onload="textAlreadySent()">
+{% endif %}
+<div class="jumbotron background_color_red">
+<p class="text-center width_15_percent pull-right"><span class="glyphicon glyphicon-road cursor_pointer color_white" title="Log out" onclick="logOut()"></span><br /><span class="color_white lead cursor_pointer" onclick="logOut()">Logout</span></p>
+<br /><br /><br />
+<h1 class="pi-brand">
+      <img class="pi-brand__logo width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</h1>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+<div id="driver_text_users_section" class="col-xs-12">
+<div class="well well-lg col-xs-offset-1 col-xs-10">
+<p class="text-center lead">Hello {{driver_first_name}},</p>
+<p class="text-center lead">Speculation Pizza: <span class="text-success">{{spec_pizza_description}}</span></p>
+<p class="text-center lead">Before pressing the button below, please ensure that you are ready to deliver the speculation pizza. Once you click this button, consumers will be alerted immediately.</p>
+<button class="input-lg btn btn-primary center-block margin_top_30px send_text_message_button" onclick="sendTextToUsers()">Send Text To Nearby Users</button>
+{% csrf_token %}
+<p id="text_sent_to_users_success" class="text-center text-success lead margin_top_30px"></p>
+</div>
+</div>
+</div>
+<div class="row">
+<div id="spec_pizza_timer" class="col-xs-12 hidden">
+<div class="well well-lg col-xs-offset-1 col-xs-10">
+<p id="timer_para" class="lead text-center"><span id="timer_begin" class="text-success">START<span class="text-info"> - </span></span><br /><span id="timer_now" class="text-warning"></span><br /><span id="timer_end" class="text-danger">END<span class="text-info"> - </span></span></p>
+</div>
+</div>
+</div>
+<div class="row">
+<div id="spec_pizza_dashboard" class="col-xs-12 hidden">
+<div class="well well-lg col-xs-offset-1 col-xs-10">
+<div id="continue_waiting_section" style="display:none;">
+<p class="width_75_percent center-block text-center text-primary lead">Please continue waiting...</p>
+<progress id="driver_wait_indicator" max="100" class="width_75_percent center-block margin_top_30px">
+</progress>
+</div>
+<div id="pizza_sold_section" style="display:none;">
+<button id="add_spec_delivery_time_stamp_button" class="input-lg btn btn-primary center-block margin_top_30px cursor_pointer" onclick="addSpecPizzaDeliveryTimeStamp()">Confirm Speculation Pizza Delivery</button>
+<p id="time_stamp_response_to_driver" class="width_75_percent center-block text-center text-success margin_top_30px"></p>
+</div>
+<div id="no_one_interested_section" style="display:none;">
+<p class="width_75_percent center-block text-center text-primary lead">No one was interested this time...no need to wait!</p>
+<button class="input-lg btn btn-primary center-block margin_top_30px cursor_pointer" onclick="logOut()">Log Out</button>
+</div>
+<div id="time_has_run_out_section" style="display:none;">
+<p class="width_75_percent center-block text-center text-primary lead">Time has run out! Thanks for waiting!</p>
+<button class="input-lg btn btn-primary center-block margin_top_30px cursor_pointer" onclick="logOut()">Log Out</button>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+function logOut(){
+    window.location.replace("/driver-interface-login/?logout_confirmation=You+are+logged+out.&pizza_order_id={{request.POST.pizza_order_id}}&driver_id={{request.POST.driver_id}}");
+}
+
+function sendTextToUsers(){
+var date_and_time_text_sent = new Date().getTime();
+var date_and_time_spec_pizza_vetting_ends = new Date(date_and_time_text_sent+({{speculation_pizza_vetting_time}}*60000)).getTime();
+$.post("/send-text-to-users/",{
+             csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+             date_and_time_text_sent:date_and_time_text_sent,
+             date_and_time_spec_pizza_vetting_ends:date_and_time_spec_pizza_vetting_ends,
+             pizza_order_id:{{request.POST.pizza_order_id}}
+             },function(data){
+          $(".send_text_message_button").addClass("disabled");
+          $("#text_sent_to_users_success").html(data);
+          $("#spec_pizza_timer,#spec_pizza_dashboard").toggleClass("hidden");
+          window.scrollTo(0,$("#spec_pizza_timer").offset().top);
+          $.get("/driver-user-intermediary/?pizza_order_id={{request.POST.pizza_order_id}}",function(data){
+          $("#timer_para").append(data);
+          setTimer();          
+});         
+});
+}
+
+function textAlreadySent(){
+    $("#driver_text_users_section").hide();
+    $("#spec_pizza_timer,#spec_pizza_dashboard").toggleClass("hidden");
+    window.scrollTo(0,$("#spec_pizza_timer").offset().top);
+    $.get("/driver-user-intermediary/?pizza_order_id={{request.POST.pizza_order_id}}",function(data){
+          $("#timer_para").append(data);
+          setTimer();
+    });
+}
+
+var stop_timer = false;
+
+function setTimer(){
+    var colon = "<span class='text-info'> : </span>";
+    var begin_time = new Date(parseInt($("[name='begin_value']").val())).getTime();
+    var get_begin_time = deMilitarizeHours(new Date(begin_time).getHours())+colon+addLeadingZero(new Date(begin_time).getMinutes())+colon+addLeadingZero(new Date(begin_time).getSeconds())+" "+setToAMOrPM(new Date(begin_time).getHours());
+    $("#timer_begin").append(get_begin_time);
+    var end_time = new Date(parseInt($("[name='end_value']").val())).getTime();
+    var get_end_time = deMilitarizeHours(new Date(end_time).getHours())+colon+addLeadingZero(new Date(end_time).getMinutes())+colon+addLeadingZero(new Date(end_time).getSeconds())+" "+setToAMOrPM(new Date(end_time).getHours());
+    $("#timer_end").append(get_end_time);
+    var start_now_time = setInterval(function(){
+    if(stop_timer == false){
+    var now_time = new Date().getTime();
+    var now_time_modified = deMilitarizeHours(new Date(now_time).getHours())+colon+addLeadingZero(new Date(now_time).getMinutes())+colon+addLeadingZero(new Date(now_time).getSeconds())+" "+setToAMOrPM(new Date(now_time).getHours());
+    var get_now_time = "NOW<span class='text-info'> - </span>"+now_time_modified;
+    $("#timer_now").html(get_now_time);    
+    notificationsToDriver(now_time);
+    }
+    else if(stop_timer == true){
+        clearInterval(start_now_time);
+    }
+    },5000);
+}
+
+
+function notificationsToDriver(current_time){
+    $.get("/notifications-to-driver/",{
+                            pizza_order_id:{{request.POST.pizza_order_id}},
+                            time_now:current_time,
+                                      },function(data){
+                              if(data.indexOf("No one is interested")>=0){
+                                  $("#no_one_interested_section").show();
+                                  $("#pizza_sold_section,#continue_waiting_section,#time_has_run_out_section").hide();                                  
+                                  stop_timer = true;
+                              }
+                              else if(data.indexOf("Pizza sold to")>=0){
+                                  $("#pizza_sold_section").show();
+                                  $("#pizza_sold_section").prepend(data);
+                                  $("no_one_interested_section,#continue_waiting_section,#time_has_run_out_section").hide();
+                                  stop_timer = true;
+                                  if(data.indexOf("This order has already been delivered")>=0){
+                                      $("#add_spec_delivery_time_stamp_button").hide();
+                                      $("#pizza_sold_section").append("<button class='input-lg btn btn-primary center-block margin_top_30px cursor_pointer' onclick='logOut()'>Log Out</button>");                                      
+                                  }
+                              }
+                              else if(data.indexOf("Continue waiting")>=0){
+                                  $("#continue_waiting_section").show();
+                                  $("#no_one_interested_section,#pizza_sold_section,#time_has_run_out_section").hide();
+                                  stop_timer = false;
+                              }
+                              else if(data.indexOf("Time has run out")>=0){
+                                  $("#timer_now").html("Time has run out!");
+                                  $("#timer_now").removeClass("text-warning");
+                                  $("#timer_now").addClass("text-danger");
+                                  $("#time_has_run_out_section").show();
+                                  $("no_one_interested_section,#continue_waiting_section,#pizza_sold_section").hide();
+                                  stop_timer = true;
+                              }                              
+                                      });
+}
+
+function addSpecPizzaDeliveryTimeStamp(){
+  $.post("/add-spec-pizza-delivery-time-stamp/",{
+                              csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                              spec_pizza_id:$("[name='spec_pizza_id']").val(),
+                              delivery_time_stamp:new Date().getTime()                              
+                                               },function(data){
+                                                 $("#time_stamp_response_to_driver").html(data);
+                                                 $("#add_spec_delivery_time_stamp_button").addClass("disabled");
+                                                 $("#pizza_sold_section").append("<button class='input-lg btn btn-primary center-block margin_top_30px cursor_pointer' onclick='logOut()'>Log Out</button>");
+                                                               });    
+}
+
+function addLeadingZero(number){
+    if(number<10){
+        return "0"+number;
+    }
+    else{
+        return number;
+    }
+}
+
+function deMilitarizeHours(number){
+    if(number>12){
+        return number-12;
+    }
+    else if(number<=12){
+        if(number == 0){
+            return 12;
+        }
+        return number;
+    }
+}
+
+function setToAMOrPM(number){
+if(number>=12){
+    return "PM";
+}
+else{
+    return "AM";
+}
+}
+
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,48 @@
+{% extends "home.html" %}
+
+{% block body %}
+<body>
+<div class="jumbotron background_color_red">
+<p class="text-center width_15_percent pull-right"><span class="glyphicon glyphicon-road cursor_pointer color_white" title="Log out" onclick="logOut()"></span><br /><span class="color_white lead cursor_pointer" onclick="logOut()">Logout</span><br /><br /></p>
+<br /><br /><br /><br />
+<h1 class="pi-brand width_30_percent center-block">
+      <img class="pi-brand__logo img-responsive width_40_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name img-responsive width_40_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</h1>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+<div class="col-xs-12">
+<div class="center-block well well-lg width_75_percent cursor_pointer">
+<p id="confirm_prompt_heading" class="text-center lead margin_top_30px width_90_percent center-block background_color_red color_white">Please confirm your purchase below:</p>
+<p id="confirm_prompt" class="lead text-center text-primary margin_top_30px width_75_percent center-block">Please confirm that you would like to purchase 1 {{request.POST.spec_pizza_description}} speculation pizza for ${{request.POST.spec_pizza_price}} by clicking the confirm button below:</p>
+<button class="input-lg btn btn-primary center-block margin_top_30px cursor_pointer" onclick="window.history.back()">Cancel</button>
+<form id="transaction_form" action="/winner/" method="post" onsubmit="return waitForFullTimeNowValue();">
+<input type='hidden' name='time_now' />
+<input type='hidden' name='pizza_order_id' value='{{request.POST.pizza_order_id}}' />
+<input type='hidden' name='user_id' value='{{request.session.id}}'/>
+<input type='hidden' name='spec_pizza_description' value='{{request.POST.spec_pizza_description}}' />
+<input type='hidden' name='spec_pizza_price' value='{{request.POST.spec_pizza_price}}'/>
+{% csrf_token %}
+<input type='submit' class="input-lg btn btn-success center-block margin_top_30px cursor_pointer" value="Confirm Purchase" />
+</form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+
+
+function waitForFullTimeNowValue(){
+    var time_now = new Date().getTime();
+    $("[name='time_now']").val(time_now);
+    return true;
+}
+
+</script>
+{% endblock %}

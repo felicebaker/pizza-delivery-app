@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-index"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <h1 class="pi-brand">
+                <img class="pi-brand__logo" src="{{ STATIC_URL }}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+                <img class="pi-brand__name" src="{{ STATIC_URL }}images/svgs/PI-white.svg" alt="Pizza Impulse">
+            </h1>
+            <h2 class="promo-header">How does it work?</h2>
+            <div class="promo swiper-container">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <img src="{{ STATIC_URL }}images/svgs/tour-pizza-box.svg" />
+                        <p>Our delivery drivers<br/>carry an extra pizza</p>
+                    </div>
+                    <div class="swiper-slide">
+                        <img class="smaller" src="{{ STATIC_URL }}images/svgs/tour-broadcast.svg" />
+                        <p>When in your area, they<br/>blast a notification to you<br />and all nearby users</p>
+                    </div>
+                    <div class="swiper-slide">
+                        <img src="{{ STATIC_URL }}images/svgs/tour-process.svg" />
+                        <p>Be the first to respond<br />and enjoy a hot pizza<br />delivered to you in 5<br />minutes</p>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+            <div class="button-container">
+                <a class="signup-button" href="/signup1/">Sign Up</a>
+                <a class="login-button" href="/login/">Log In</a>
+                <p style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">{{request.GET.response}}</p>
+            </div>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <div class="desktop-promo">
+            <h1 class="pi-brand">
+                <img class="pi-brand__logo" src="{{ STATIC_URL }}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+                <img class="pi-brand__name" src="{{ STATIC_URL }}images/svgs/PI-white.svg" alt="Pizza Impulse">
+            </h1>
+            <a class="app-button" href="#"><img src="{{ STATIC_URL }}images/ui/appstore.png" alt="Download from the App Store" /></a>
+            <a class="app-button" href="#"><img src="{{ STATIC_URL }}images/ui/playstore.png" alt="Available on Android at the Play Store" /></a>
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{ STATIC_URL }}build/bundle.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+from django.shortcuts import render
+from django.views.generic import TemplateView, ListView
+from django.http import HttpRequest, HttpResponse
+from users.sign_up_2_form import SignUp2Form
+from users.models import Users
+from authorizenet.cim import add_profile, get_profile
+from authorizenet.models import CIMResponse, Response
+from datetime import date
+from topping_preferences.models import ToppingPreferences
+from topping_preferences.topping_preference_form import ToppingPreferencesForm, ToppingPreferencesAdjustForm
+from time_preferences.models import TimePreferences
+from time_preferences.time_preference_form import TimePreferencesForm, TimePreferencesAdjustForm
+
+
+class HomePageView(TemplateView):
+    template_name = "index.html"
+
+class SignUp1View(TemplateView):
+    template_name = "signup1.html"
+
+class LogInView(TemplateView):
+    template_name = "login.html"
+
+def sign_up_2_view(request):
+    if request.method == 'POST':
+        request.session['first_name'] = request.POST['first_name']
+        request.session['last_name'] = request.POST['last_name']
+        request.session['email'] = request.POST['email']
+        request.session['password'] = request.POST['password']
+        return render(request, "signup2.html")
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+def sign_up_3_view(request):
+    if request.method == 'POST':
+        request.session['address'] = request.POST['address']
+        request.session['city'] = request.POST['city']
+        request.session['state'] = request.POST['state']
+        request.session['zip'] = request.POST['zip']
+        request.session['phone'] = request.POST['phone']
+        f = SignUp2Form(request.POST)
+        sign_up_2_save = f.save()
+        if sign_up_2_save:
+            get_session_id = Users.objects.get(email = request.session['email'], password = request.session['password'])
+            request.session['id'] = get_session_id.id
+            return render(request, "signup3.html")
+           
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+    return render(request, 'signup3.html', {'form': f})
+
+
+def sign_up_4_view(request):
+    if request.method == 'POST':
+        get_current_customer = Users.objects.get(email = request.session['email'], password = request.session['password'])
+        customer_id = get_current_customer.id
+        company = ""
+        country = ""
+        fax_number = ""
+        cc_number = int(str(request.POST['ccnumber1'])+str(request.POST['ccnumber2'])+str(request.POST['ccnumber3'])+str(request.POST['ccnumber4']))
+        expiration_date = date(int(request.POST['year']), int(request.POST['month']), 1)
+        billing_fields = {'firstName':request.session['first_name'], 'lastName': request.session['last_name'], 'company': company, 'address':request.session['address'], 'city':request.session['city'], 'state':request.session['state'], 'zip':request.session['zip'], 'country':country, 'phoneNumber':request.session['phone'], 'faxNumber':fax_number}
+        credit_card_fields = {'cardNumber':cc_number, 'expirationDate':expiration_date, 'cardCode':request.POST['seccode']}
+        add_customer_profile = add_profile(customer_id, credit_card_fields, billing_fields, shipping_form_data=None, customer_email=None, customer_description=None)        
+        """
+        transaction_response = CIMResponse.objects.get(id = customer_id)
+        if transaction_response.result == "Ok":
+            return render(request, 'signup4.html')
+        else:
+            return HttpResponse("There was an error in processing this transaction - Error Code: "+transaction_response.result_code)
+        """
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+
+def settings_view(request):
+    if(request.META['HTTP_REFERER'] == 'http://pizzaapp.zpstage.com/signup4/') and (request.method == "POST"):
+        session_id = int(request.session['id'])       
+        for topping in request.POST.getlist('topping_preference'):
+            f = ToppingPreferencesForm(request.POST)
+            topping_preference_save = f.save(commit=False)
+            topping_preference_save.topping_preference = topping
+            topping_preference_save.user_id = session_id            
+            topping_preference_save.save(force_insert=True)
+        for time in request.POST.getlist('time_preference'):
+            f = TimePreferencesForm(request.POST)
+            time_preference_save = f.save(commit=False)
+            time_preference_save.time_preference = time
+            time_preference_save.user_id = session_id
+            time_preference_save.save(force_insert=True)                                         
+        return render(request, "settings.html")
+    elif(request.META['HTTP_REFERER'] == 'http://pizzaapp.zpstage.com/pizza-preferences/') and (request.method == 'GET'):
+        return render(request, "settings.html")
+    elif(request.META['HTTP_REFERER'] == 'http://pizzaapp.zpstage.com/address-preferences/') and (request.method == 'GET'):
+        return render(request, "settings.html")
+    elif(request.META['HTTP_REFERER'] == 'http://pizzaapp.zpstage.com/pizza-preferences/') and (request.method == 'POST'):
+        session_id = int(request.session['id'])
+        for entry in ToppingPreferences.objects.filter(user_id=session_id):
+            entry.delete()
+        for entry in TimePreferences.objects.filter(user_id=session_id):
+            entry.delete()
+        for topping in request.POST.getlist('topping_preference'):
+            f = ToppingPreferencesAdjustForm(request.POST)
+            topping_preference_save = f.save(commit=False)
+            topping_preference_save.topping_preference = topping
+            topping_preference_save.user_id = session_id
+            topping_preference_save.save(force_insert=True)
+        for time in request.POST.getlist('time_preference'):
+            f = TimePreferencesAdjustForm(request.POST)
+            time_preference_save = f.save(commit=False)
+            time_preference_save.time_preference = time
+            time_preference_save.user_id = session_id
+            time_preference_save.save(force_insert=True)
+        return render(request, "settings.html")
+    elif(request.META['HTTP_REFERER'] == 'http://pizzaapp.zpstage.com/address-preferences/') and (request.method == 'POST'):
+        session_id = int(request.session['id'])
+        Users.objects.filter(id=session_id).update(address=request.POST['address'],address2=request.POST['address2'],city=request.POST['city'],state=request.POST['state'],zip=request.POST['zip'],phone=request.POST['phone'])   
+        return render(request, "settings.html")
+    else:
+        return HttpResponse("You are not allowed to access this page.")
+
+    return render(request, 'settings.html', {'form': f})
+     
+              
+class PizzaPreferencesView(ListView):
+    model = ToppingPreferences
+    template_name = "pizza-preferences.html"
+    context_object_name = "topping_preference_list"
+
+    def get_context_data(self, **kwargs):
+        context = super(PizzaPreferencesView, self).get_context_data(**kwargs)
+        context['time_preference_list'] = TimePreferences.objects.all()
+        return context
+
+                         
+class AddressPreferencesView(ListView):
+    model = Users
+    template_name = "address-preferences.html"
+    context_object_name = "address_preference_list"
+
+def payment_preferences_view(request):
+    if((request.META['HTTP_REFERER'] == "http://pizzaapp.zpstage.com/settings/") and (request.method == "GET")):
+        get_customer_cc_info = get_profile(request.session['id'])
+        # get_customer_cc_info_payment_profiles = get_customer_cc_info['payment_profiles']
+        # return HttpResponse(get_customer_cc_info_payment_profiles)
+        return HttpResponse(get_customer_cc_info)
+    else:
+        return HttpResponse("You are not allowed to access this page.")

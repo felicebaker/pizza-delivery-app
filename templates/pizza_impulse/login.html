@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-login" onload="setURL(),logIn()"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->               
+            <h1 class="pi-brand">
+                <img class="pi-brand__logo" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+                <img class="pi-brand__name" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+            </h1>
+
+           <!-- <form class="login-form" action="#" method="post">-->
+                <div class="login-form">
+                <input class="login-form__text-input" type="text" name="email" placeholder="Email" />
+                <input class="login-form__text-input" type="password" name="password" placeholder="Password" />
+                <a class="login-form__forgot-credentials" href="/forgot-password/">Forgot Password?</a>
+                {% csrf_token %}
+                <button class="login-form__login-button">Log In</button>
+                <p id="response_to_user" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;"></p>
+                <p id="logout_confirmation" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">{{request.GET.logout_confirmation}}</p>
+                <p style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">{{request.GET.response}}</p>
+                </div>
+           <!-- </form>-->
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+        <script>
+        function setURL(){            
+            if(window.location.href.slice(window.location.href.length-7,window.location.href.length) == "/login/"){
+                 window.location.replace("/login/?pizza_order_id=0"); 
+            }
+        }
+
+
+        function logIn(){
+        $(".login-form__login-button").on("click",function(){
+           $.post("/home/", {
+           csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+           email:$("[name='email']").val(),
+           password:$("[name='password']").val()
+        }, function(data){
+        if(data.indexOf("not")>=0){
+        $("#response_to_user").html("A match was not found for<br />the login info you have provided");
+        }
+        else if(data.indexOf("not")==-1){
+            if(data.indexOf("we need to confirm your registration.")==-1){
+            window.location.replace("http://pizzaapp.zpstage.com/home/?pizza_order_id={{request.GET.pizza_order_id}}");
+            }
+            else{
+            $("#response_to_user").html(data);
+            }
+        }
+        });            
+        });
+        }
+        </script>
+    </body>
+</html>

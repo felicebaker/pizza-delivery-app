@@ -1,0 +1,92 @@
+.middle-stripe {
+    absolute top 0 bottom 0 left 40% right 40%
+    background #d59196
+    z-index 1
+    &:before {
+        absolute top 0 bottom 0 left -7px
+        background #d59196
+        content ""
+        display block
+        width 2px
+    }
+    &:after {
+        absolute top 0 bottom 0 right -7px
+        background #d59196
+        content ""
+        display block
+        width 2px
+    }
+}
+
+.page-winner .middle-stripe {
+    background-color #b1dca5
+    &:before {
+        background-color #b1dca5
+    }
+    &:after {
+        background-color #b1dca5
+    }
+}
+
+.result-box {
+    background-color white
+    border-radius 1em
+    margin 3em 7%
+    padding 1em 2em
+    position relative
+    text-align center
+    z-index 10
+}
+
+    .result-box__logo {
+        margin 1em auto
+        height 9em
+    }
+
+    .result-box__brand {
+        margin 1em auto
+        height 3em
+    }
+
+    .result-box__sorry {
+        color $c-title
+        font-size 3em
+        text-transform uppercase
+        font-weight 900
+        margin-bottom 0.25em
+        .page-winner & {
+            color $c-key
+        }
+    }
+
+    .result-box__detail {
+        color $c-title
+        font-size 1.1em
+        font-weight 500
+        line-height 1.5em
+        margin-bottom 1em
+        .page-winner & {
+            color $c-key
+        }
+    }
+
+    .result-box__call-button {
+        @extends $primary-button
+        background-color #64b94d
+        color white
+        margin 1em auto
+        padding 0.5em 0
+        width 100%
+        &:before {
+            background-color darken(#64b94d, 20)
+        }
+    }
+
+    .result-box__exit-button {
+        @extends $primary-button
+        color white
+        background-color $c-key
+        margin-top 0
+        padding 0.5em 0
+        width 100%
+    }

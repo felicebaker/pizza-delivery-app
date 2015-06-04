@@ -1,0 +1,490 @@
+{% extends "merchant-login.html" %}
+
+{% block body %}
+<body onload="showAddDriverPopUp(),submitNewDriver(),showDeliveryAddressInputSection(),deleteDriver()">
+<div class="jumbotron background_color_red">
+<p class="text-center width_15_percent pull-right"><span class="glyphicon glyphicon-road cursor_pointer color_white" title="Log out" onclick="logOut()"></span><br /><span class="color_white lead cursor_pointer" onclick="logOut()">Logout</span></p>
+<br /><br /><br />
+<h1 class="pi-brand">
+      <img class="pi-brand__logo img-responsive width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name img-responsive width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</h1>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+<div id="first_popover_parent" class="col-xs-12">
+<div class="center-block well well-lg width_75_percent cursor_pointer pop_over">
+<p class="text-center lead">ADD A DRIVER</p>
+</div>
+</div>
+</div>
+<div class="row">
+<div id="first_delete_driver" class="col-xs-12">
+<div class="center-block well well-lg width_75_percent cursor_pointer delete_driver_pop_over">
+<p class="text-center lead">DELETE A DRIVER</p>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12">
+<div id="enter_delivery_address_click" class="center-block well well-lg width_75_percent cursor_pointer">
+<p class="text-center lead">ENTER DELIVERY ADDRESS</p>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12">
+<div id="enter_delivery_address_inputs" class="center-block well well-lg width_75_percent hidden">
+<input type="text" name="street_address_1" placeholder="Street Address 1" class="input-lg center-block width_75_percent margin_top_30px" />
+<input type="text" name="street_address_2" placeholder="Street Address 2" class="input-lg center-block width_75_percent margin_top_30px" />
+<input type="text" name="city" placeholder="City" class="input-lg center-block width_60_percent margin_top_30px" />
+<input type="text" name="state" placeholder="State" class="input-lg center-block width_60_percent margin_top_30px" />
+<input type="text" name="zip_code" placeholder="Zip Code" class="input-lg center-block width_40_percent margin_top_30px" />
+{% csrf_token %}
+<div id="no_match_delivery_address" class="alert alert-info hidden width_75_percent margin_top_30px center-block">
+Please check with customer and re-enter delivery address
+</div>
+<div id="no_match_delivery_address_2" class="alert alert-info hidden width_75_percent margin_top_30px center-block">
+There was a problem saving the delivery address you confirmed. Please check with the customer again.
+</div>
+<button class="input-lg btn btn-primary center-block margin_top_30px submit_delivery_address_button" onclick="validateDeliveryAddress()">Enter Delivery Address</button>
+</div>
+</div>
+</div>
+</div>
+<div class="col-xs-12">
+<div id="enter_initial_delivery_order_description_inputs" class="center-block well well-lg width_75_percent hidden">
+<p class="text-center lead">ENTER ORDER DESCRIPTION FOR PRIMARY CUSTOMER (Up to 150 Characters)</p>
+<input type="text" name="initial_delivery_order_description" placeholder="Order Description For Primary Customer Delivery" maxlength="150" class="input-lg center-block width_75_percent margin_top_30px" />
+<input type="hidden" name="initial_delivery_id" />
+{% csrf_token %}
+<button class="input-lg btn btn-primary center-block margin_top_30px submit_initial_delivery_topping_button" onclick="submitInitialDeliveryTopping()">Enter Primary Delivery Topping</button>
+<p id="primary_order_description_response" class="lead margin_top_30px width_75_percent center-block"></p>
+</div>
+</div>
+<div class="col-xs-12">
+<div id="enter_distance_radius" class="center-block well well-lg width_75_percent hidden">
+<p class="text-center lead">ENTER DISTANCE IN MILES FROM PRIMARY DELIVERY TO POTENTIAL SPECULATION PIZZA WINNERS:</p>
+<p class="text-center lead"><input type="number" name="num_of_miles" min="1" max="{{spec_pizza_market_radius_max}}" placeholder="Enter number of miles from 1-{{spec_pizza_market_radius_max}}" class="input-lg width_40_percent margin_top_30px" /> miles</p>
+<button class="input-lg btn btn-primary center-block margin_top_30px submit_num_of_miles" onclick="getNearByAddressesWTopPref()">Submit Distance</button>
+<p id="num_of_miles_para" class="margin_top_30px width_75_percent center-block text-center text-danger"></p>
+</div>
+</div>
+<div class="col-xs-12">
+<div id="find_members_near_delivery_address" class="center-block well well-lg width_75_percent hidden">
+<p class="text-center lead">TOP PIZZA TOPPING PREFERENCE AMONG NEARBY USERS:</p>
+<div id="members_near_delivery_address_w_top_pref" class="margin_top_30px"></div>
+<button class="input-lg btn btn-primary center-block margin_top_30px enter_transaction" onclick="enterTransaction()">Enter Transaction</button>
+</div>
+</div>
+
+<div class="col-xs-12">
+<div id="enter_transaction_cost_inputs" class="center-block well well-lg width_90_percent hidden">
+<p class="text-center lead">ENTER PRICE OF SPECULATION PIZZA:</p>
+<p class="margin_top_30px text-center">$ <select class="width_20_percent input-lg" name="integer_1"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select> <select class="width_20_percent input-lg" name="integer_2"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select> <span class="lead">.</span> <select class="width_20_percent input-lg" name="integer_3"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select> <select class="width_20_percent input-lg" name="integer_4"><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option></select></p>
+<button class="input-lg btn btn-primary center-block margin_top_30px submit_transaction" onclick="submitTransaction()">Submit Speculation Pizza Price</button>
+<p id="transaction_success_response" class="margin_top_30px width_75_percent center-block text-center"></p>
+<button class="input-lg btn btn-primary center-block margin_top_30px submit_add_driver hidden" onclick="selectOrAddNewDriver()">Select Or Add New Driver</button>
+</div>
+</div>
+<div class="col-xs-12">
+<div id="select_or_add_driver" class="center-block well well-lg clearfix width_75_percent hidden">
+<p class="text-center lead">SELECT OR ADD NEW DRIVER:</p>
+<select class="input-lg width_75_percent center-block margin_top_30px lead" name="selected_driver"></select>
+<p id="no_drivers_exist_response" class="width_75_percent center-block text-center margin_top_30px text-primary"></p>
+<button class="btn btn-success width_75_percent center-block margin_top_30px pop_over">Add a new driver, then select<br />new driver from options above</button>
+<button class="btn btn-success width_75_percent center-block margin_top_30px delete_driver_pop_over">Delete a driver</button>
+<button id="submit_driver_assignment" class="btn btn-primary center-block margin_top_30px" onclick="sendTextMessageToDriver()">Send Text Message To Driver<br />With Speculation Pizza<br /> READY TO DELIVER Prompt</button>
+<p id="add_driver_success_response" class="width_75_percent center-block text-center margin_top_30px"></p>
+</div>
+</div>
+<div class="col-xs-12">
+<div id="cancel_order_section" class="center-block clearfix width_75_percent">
+<button id="enter_new_order_button" class="btn btn-primary center-block margin_top_30px hidden" onclick="cancelOrder()">Cancel This Order</button>
+<br />
+<br />
+</div>
+</div>
+</body>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+function showAddDriverPopUp(){
+    var driver_info_form_title = "Add Driver"
+    var driver_info_form = "<input type='text' class='margin_top_30px center-block' name='driver_first_name' placeholder='Driver First Name' />";
+    driver_info_form += "<input type='text' class='margin_top_30px center-block' name='driver_last_name' placeholder='Driver Last Name' />";
+    driver_info_form += "<input type='text' class='margin_top_30px center-block' name='driver_cell_phone' placeholder='Driver Mobile' />";
+    driver_info_form += "<p class='margin_top_30px center-block text-primary'>Please enter phone number in<br /> 111-222-3333 format</p>";
+    driver_info_form += "<input type='hidden' name='merchant_name' value='{{request.session.merchant_name}}' />";
+    driver_info_form += "{% csrf_token %}";
+    driver_info_form += "<button id='submit_new_driver_button' class='btn btn-primary margin_top_30px center-block'>Add Driver</button>";
+    driver_info_form += "<p id='add_new_driver_response' class='margin_top_30px center-block'></p>";
+    $(".pop_over").popover({title:driver_info_form_title,content:driver_info_form,placement:"bottom",html:true,});    
+}
+
+function submitNewDriver(){
+    $(".pop_over").on("shown.bs.popover",function(){
+    $("#submit_new_driver_button").on("click",function(){
+        var array_of_field_names=["driver_first_name","driver_last_name","driver_cell_phone"];
+        for(i=0;i<array_of_field_names.length;i++){
+            if($("[name='"+array_of_field_names[i]+"']").val().length==0){
+                var remove_dashes_from_value = array_of_field_names[i].replace("_"," ");
+                remove_dashes_from_value = remove_dashes_from_value.replace("_"," ");
+                $("#add_new_driver_response").addClass("text-danger");
+                $("#add_new_driver_response").removeClass("text-success");
+                $("#add_new_driver_response").html("Please fill out the "+remove_dashes_from_value+" field.");
+                return false;
+            }
+        }
+        if(($("[name='driver_cell_phone']").val().length==12)&&($("[name='driver_cell_phone']").val().slice(0,1)>=0)&&($("[name='driver_cell_phone']").val().slice(1,2)>=0)&&($("[name='driver_cell_phone']").val().slice(2,3)>=0)&&($("[name='driver_cell_phone']").val().slice(3,4)=="-")&&($("[name='driver_cell_phone']").val().slice(4,5)>=0)&&($("[name='driver_cell_phone']").val().slice(5,6)>=0)&&($("[name='driver_cell_phone']").val().slice(6,7)>=0)&&($("[name='driver_cell_phone']").val().slice(7,8)=="-")&&($("[name='driver_cell_phone']").val().slice(8,9)>=0)&&($("[name='driver_cell_phone']").val().slice(9,10)>=0)&&($("[name='driver_cell_phone']").val().slice(10,11)>=0)&&($("[name='driver_cell_phone']").val().slice(11,12)>=0)){
+         // continue to submit
+        }
+        else{
+            $("#add_new_driver_response").html("Please enter phone number in 111-222-3333 format.");
+            return false;
+        }
+        
+        $.post("/new-driver-submit/", {csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                       driver_first_name:$("[name='driver_first_name']").val(),
+                                       driver_last_name:$("[name='driver_last_name']").val(),
+                                       driver_cell_phone:$("[name='driver_cell_phone']").val(),
+                                       merchant_name:$("[name='merchant_name']").val(),}, function(data){
+                    if(data.indexOf("driver already exists")>=0){
+                        $("#add_new_driver_response").addClass("text-danger");
+                        $("#add_new_driver_response").removeClass("text-success");
+                    }
+                    else if(data.indexOf("New driver added!")>=0){
+                        $("#add_new_driver_response").addClass("text-success");
+                        $("#add_new_driver_response").removeClass("text-danger");
+                        $("#first_popover_parent").find(".pop_over").addClass("disabled");
+                    }
+                    else if(data.indexOf("problem adding the new driver.")>=0){
+                        $("#add_new_driver_response").addClass("text-danger");
+                        $("#add_new_driver_response").removeClass("text-success");
+                    }
+                    $("#add_new_driver_response").html(data);
+                    setTimeout(function(){$(".pop_over").popover("hide");},3000);
+                         });
+    if($("select_or_add_new_driver").hasClass("hidden")==false){
+        updateDriverSelectTag();
+    }
+    });
+    });
+}
+
+function showDeliveryAddressInputSection(){
+    $("#enter_delivery_address_click").on("click", function(){
+        $("#enter_delivery_address_inputs").toggleClass("hidden");
+        window.scrollTo(0,$("#enter_delivery_address_inputs").offset().top);
+});
+}
+
+function validateDeliveryAddress(){
+    $.post("/enter-delivery-address-submit/", {
+                                          csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                          street_address_1:$("[name='street_address_1']").val(),
+                                          street_address_2:$("[name='street_address_2']").val(),
+                                          city:$("[name='city']").val(),
+                                          state:$("[name='state']").val(),
+                                          zip_code:$("[name='zip_code']").val(),
+                                              },function(data){
+                           var verified_address = data;
+                           verified_address += "<button onclick='noMatchDeliveryAddressPopOver()'  class='btn btn-primary margin_top_30px center-block'>None of the above matches</button>";
+                           $(".submit_delivery_address_button").popover({title:"<p id='validate_delivery_address_header' class='lead'>Please click on one of the addresses below to confirm delivery destination:</p>",content:verified_address,placement:"top",html:true,});
+                           $(".submit_delivery_address_button").popover('show');
+                           $(".validate_delivery_address_content").on("mouseenter", function(){
+                           $(this).toggleClass("bg-primary");
+    });                           
+                           $(".validate_delivery_address_content").on("mouseleave", function(){
+                           $(this).toggleClass("bg-primary");
+    });                                                                        
+    });
+}
+
+function noMatchDeliveryAddressPopOver(){
+    $(".submit_delivery_address_button").popover('destroy');
+    $("#no_match_delivery_address").toggleClass('hidden');
+    setTimeout(function(){$("#no_match_delivery_address").toggleClass('hidden');},3000);
+}
+
+function submitValidatedAddress(validated_address){
+        var d = new Date();
+        $.post("/enter-confirmed-delivery-address-submit/",{        
+                                                csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                                confirmed_address:validated_address,
+                                                confirmed_street_address_2:$(".validate_delivery_address_apartment_number").html(),
+                                                date_now_user_time_zone:d.getTime(),
+                                                }, function(data){
+    if(data.indexOf("Not Successfully Saved")>=0){
+        $(".submit_delivery_address_button").popover('destroy');
+        $("#no_match_delivery_address_2").toggleClass('hidden');
+        setTimeout(function(){$("#no_match_delivery_address_2").toggleClass('hidden');},3000);
+    }
+    else{
+        $(".submit_delivery_address_button").popover('destroy');
+        $("#enter_initial_delivery_order_description_inputs").toggleClass("hidden");
+        $("[name='initial_delivery_id']").val(data);
+        $("[name='street_address_1'],[name='street_address_2'],[name='city'],[name='state'],[name='zip_code']").attr("readonly","true");
+        $(".submit_delivery_address_button").addClass("disabled");
+        $("#enter_new_order_button").toggleClass("hidden");
+        window.scrollTo(0,$("#enter_initial_delivery_order_description_inputs").offset().top);
+    }      
+});    
+}
+
+function submitInitialDeliveryTopping(){
+    if($("[name='initial_delivery_order_description']").val().length>0){
+    $.post("/submit-initial-delivery-order-description/",{
+              csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+              initial_delivery_order_description:$("[name='initial_delivery_order_description']").val(),
+              initial_delivery_id:$("[name='initial_delivery_id']").val(),
+              }, function(data){
+              // $("#primary_order_description_response").removeClass("text-danger");
+              //$("#primary_order_description_response").addClass("text-success");
+              //$("#primary_order_description_response").html(data);
+              $("#enter_distance_radius").toggleClass("hidden");
+              $("[name='initial_delivery_order_description']").attr("readonly","true");
+              $(".submit_initial_delivery_topping_button").addClass("disabled");
+              window.scrollTo(0,$("#enter_distance_radius").offset().top);
+              });
+}
+else{
+   $("#primary_order_description_response").removeClass("text-success");
+   $("#primary_order_description_response").addClass("text-danger");
+   $("#primary_order_description_response").html("Please enter an order description for the primary delivery.");
+}
+}
+
+function getNearByAddressesWTopPref(){
+if($("[name='num_of_miles']").val().length>0){
+if(parseInt($("[name='num_of_miles']").val())>{{spec_pizza_market_radius_max}}){
+    $("#num_of_miles_para").html("Please enter a number value equal to or less than {{spec_pizza_market_radius_max}}");
+    $(".enter_transaction").hide();
+}
+else if(parseInt($("[name='num_of_miles']").val())<1){
+    $("#num_of_miles_para").html("Please enter a number value greater than or equal to 1");
+    $(".enter_transaction").hide();
+}
+else if(parseInt($("[name='num_of_miles']").val())=="NaN"){
+    $("#num_of_miles_para").html("Please enter a number value");
+    $(".enter_transaction").hide();
+}
+else{
+    $("#num_of_miles_para").html("");
+    $("#find_members_near_delivery_address").toggleClass("hidden");
+    window.scrollTo(0,$("#find_members_near_delivery_address").offset().top);
+    $.post("/google-distance-matrix-api/", {
+                            csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                            initial_delivery_id:$("[name='initial_delivery_id']").val(),
+                            num_of_miles:parseInt($("[name='num_of_miles']").val()),}, function(data){
+    if(data.indexOf("Please widen your search")==-1){
+    $("#members_near_delivery_address_w_top_pref").html(data);
+    $(".enter_transaction").show();
+    }
+    else if(data.indexOf("Please widen your search")>=0){
+    $("#members_near_delivery_address_w_top_pref").html(data);
+    $(".enter_transaction").hide();
+    }
+});
+}
+}
+else if($("[name='num_of_miles']").val().length==0){
+    $("#num_of_miles_para").html("Please fill out the distance field above with a number between 1 - {{spec_pizza_market_radius_max}}");
+    $(".enter_transaction").hide();
+}
+}
+
+function enterTransaction(){
+    $(".enter_transaction").addClass("disabled");
+    $(".submit_num_of_miles").addClass("disabled");
+    $("#enter_transaction_cost_inputs").toggleClass("hidden");
+    window.scrollTo(0,$("#enter_transaction_cost_inputs").offset().top);
+}
+
+function submitTransaction(){
+    if(($("[name='integer_1']").val().length==0) || ($("[name='integer_2']").val().length==0) || ($("[name='integer_3']").val().length==0) || ($("[name='integer_4']").val().length==0)){
+        $("#transaction_success_response").addClass("text-danger");
+        $("#transaction_success_response").removeClass("text-success");
+        $("#transaction_success_response").html("Please make sure each of the<br />fields above contains a numeric value.<br />If the total cost is $3.00, please<br />enter a 0 in the first field.");
+        return false;
+    }
+    else if(($("[name='integer_1']").val().length>0) && ($("[name='integer_2']").val().length>0) && ($("[name='integer_3']").val().length>0) && ($("[name='integer_4']").val().length>0)){
+        $.post("/submit-spec-pizza-transaction/",{csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                                  integer_1:$("[name='integer_1']").val(),
+                                                  integer_2:$("[name='integer_2']").val(),
+                                                  integer_3:$("[name='integer_3']").val(),
+                                                  integer_4:$("[name='integer_4']").val(),
+                                                  initial_delivery_id:$("[name='initial_delivery_id']").val(),},function(data){
+                                                  $("#transaction_success_response").addClass("text-success");
+                                                  $("#transaction_success_response").removeClass("text-danger");
+                                                  $("#transaction_success_response").html(data);
+                                                  $("[name='integer_1'],[name='integer_2'],[name='integer_3'],[name='integer_4']").attr("readonly","true");                   
+                                                  $(".submit_transaction").addClass("disabled");
+                                                  $(".submit_add_driver").toggleClass("hidden");
+    });
+    }
+}
+
+
+function selectOrAddNewDriver(){
+    $("[name='num_of_miles']").attr("readonly","true");
+    $(".submit_add_driver").addClass("disabled");
+    $("#select_or_add_driver").toggleClass("hidden");
+    window.scrollTo(0,$("#select_or_add_driver").offset().top);
+    updateDriverSelectTag();
+}
+
+function updateDriverSelectTag(){
+    $.post("/drivers-list/", {
+                          csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                              },function(data){
+                                    if(data.indexOf("<option") >= 0){
+                                    $("#no_drivers_exist_response").hide();
+                                    $("[name='selected_driver']").show();
+                                    $("[name='selected_driver']").html(data);
+                                    }
+                                    else if(data.indexOf("There are no drivers listed yet")>=0){
+                                    $("#no_drivers_exist_response").show();
+                                    $("[name='selected_driver']").hide();
+                                    $("#no_drivers_exist_response").html(data);
+                                    }
+                                           });
+
+}
+
+function sendTextMessageToDriver(){
+    if($("[name='selected_driver']").css("display","block")){
+       var post_sent_or_not = 0;
+       if($("[name='selected_driver']").val().indexOf("none_selected")>=0){
+          $("#add_driver_success_response").removeClass("text-success");
+          $("#add_driver_success_response").addClass("text-danger");
+          $("#add_driver_success_response").html("no driver selected");
+       }      
+       else if($("[name='selected_driver']").val().indexOf("none_selected")==-1){
+          $.post("/send-text-message-to-driver/",{
+                                        csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),                                        
+                                        selected_driver_number:$("[name='selected_driver']").val(),
+                                        initial_delivery_id:$("[name='initial_delivery_id']").val()                                        
+                                                 }, function(data,status){
+          if(status=="success"){
+          post_sent_or_not += 1;
+          $("#add_driver_success_response").removeClass("text-danger");
+          $("#add_driver_success_response").addClass("text-success");
+          $("#add_driver_success_response").html(data);
+          $("[name='selected_driver']").attr("readonly","true");
+          $("#submit_driver_assignment").addClass("disabled");
+          $("#select_or_add_driver").find(".pop_over").addClass("disabled");
+          $("#select_or_add_driver").find(".delete_driver_pop_over").addClass("disabled");
+          $("#enter_new_order_button").attr("onclick","enterNewOrder()");
+          $("#enter_new_order_button").html("Enter New Order");
+          }
+          });
+          setTimeout(function(){
+          if(post_sent_or_not == 0){
+               $("#add_driver_success_response").addClass("text-danger");
+               $("#add_driver_success_response").removeClass("text-success");
+               $("#add_driver_success_response").html("This driver may have been deleted by another member of your team,<br />or the cell phone number provided is not valid.");
+          }},4000);
+       }
+    }
+    else if($("[name='selected_driver']").css("display","none")){
+        $("#add_driver_success_response").removeClass("text-success");
+        $("#add_driver_success_response").addClass("text-danger");
+        $("#add_driver_success_response").html("select tag is not showing");
+    }
+
+}
+
+function enterNewOrder(){
+    window.location.reload();
+}
+
+function cancelOrder(){
+    $.post("/cancel-order/",{
+               csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+               initial_delivery_id:$("[name='initial_delivery_id']").val(),
+    },function(){window.location.reload();});
+}
+
+function logOut(){
+    window.location.replace("/merchant-login/?logout_confirmation=You+are+logged+out.");
+}
+
+function deleteDriver(){
+    var delete_driver_heading = "Delete Driver"
+    var delete_driver_content = "<p class='margin_top_30px center-block'>Select Driver To Delete:</p>";
+    delete_driver_content += "<select name='select_driver_to_delete' class='margin_top_30px center-block width_90_percent'></select>"; 
+    delete_driver_content += "<p id='no_drivers_exist_to_delete_response' class='margin_top_30px center-block text-primary'></p>";
+    delete_driver_content += "{% csrf_token %}";
+    delete_driver_content += "<input type='hidden' name='merchant_name' value='{{request.session.merchant_name}}' />";
+    delete_driver_content += "<button id='delete_driver_button' class='btn btn-primary margin_top_30px center-block' onclick='deleteDriverComplete()'>Delete Driver</button>";
+    delete_driver_content += "<p id='delete_driver_success_response' class='margin_top_30px center-block'></p>";
+    $(".delete_driver_pop_over").popover({title:delete_driver_heading,content:delete_driver_content,placement:"bottom",html:true,});
+    $(".delete_driver_pop_over").on("shown.bs.popover",function(){
+    $.post("/drivers-list/", {
+                          csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                              },function(data){
+                                    if(data.indexOf("<option") >= 0){
+                                    $("#no_drivers_exist_to_delete_response").hide();
+                                    $("[name='select_driver_to_delete']").show();
+                                    $("[name='select_driver_to_delete']").html(data);
+                                    }
+                                    else if(data.indexOf("There are no drivers listed yet")>=0){
+                                    $("#no_drivers_exist_to_delete_response").show();
+                                    $("[name='select_driver_to_delete']").hide();
+                                    $("#no_drivers_exist_to_delete_response").html(data);
+                                    }
+                                           });
+                                           });
+}
+
+function deleteDriverComplete(){
+    if($("[name='select_driver_to_delete']").val()=="none_selected"){
+        $("#delete_driver_success_response").removeClass("text-success");
+        $("#delete_driver_success_response").addClass("text-danger");
+        $("#delete_driver_success_response").html("Please select a driver to delete.");    
+        return false;
+    }
+    else if($("#no_drivers_exist_to_delete_response").html().length>0){
+       $("#delete_driver_success_response").removeClass("text-success");
+       $("#delete_driver_success_response").addClass("text-danger");
+       $("#delete_driver_success_response").html("There are no drivers to delete.");
+       return false;      
+    }
+    else if($("[name='select_driver_to_delete']").val()!="none_selected"){
+       $.post("/delete-driver/", {csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                                            select_driver_to_delete:$("[name='select_driver_to_delete']").val(),
+                                            merchant_name:$("[name='merchant_name']").val()}, function(data){
+       $("#delete_driver_success_response").removeClass("text-danger");
+       $("#delete_driver_success_response").addClass("text-success");
+       $("#delete_driver_success_response").html(data);
+       });
+        $.post("/drivers-list/", {
+                          csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                              },function(data){
+                                    if(data.indexOf("<option") >= 0){
+                                    $("#no_drivers_exist_to_delete_response").hide();
+                                    $("[name='select_driver_to_delete']").show();
+                                    $("[name='select_driver_to_delete']").html(data);
+                                    }
+                                    else if(data.indexOf("There are no drivers listed yet")>=0){
+                                    $("#no_drivers_exist_to_delete_response").show();
+                                    $("[name='select_driver_to_delete']").hide();
+                                    $("#no_drivers_exist_to_delete_response").html(data);
+                                    }
+                                           });
+    setTimeout(function(){$(".delete_driver_pop_over").popover("hide");},4000);
+     if($("select_or_add_new_driver").hasClass("hidden")==false){
+        updateDriverSelectTag();
+    }
+    }
+}
+
+</script>
+</html>
+{% endblock %}
+
+

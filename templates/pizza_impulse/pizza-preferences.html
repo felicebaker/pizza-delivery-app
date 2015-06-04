@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-signup"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="masthead"> 
+                <a class="masthead__back-button" href="/settings/"><img class="masthead__back-image" src="{{STATIC_URL}}images/svgs/back-button.svg" alt="Go Back" /></a>
+                <h1 class="masthead__heading">Pizza Preferences</h1>
+                <div class="masthead__logo-container"><img class="masthead__logo" src="{{STATIC_URL}}images/svgs/PI-logo-yellow-red.svg" alt="Pizza Impulse" /></div>
+            </header>
+            <!-- doesn't really go to GET settings.html - just here for static client preview -->
+            {% if request.META.HTTP_HOST|add:"/settings/" in request.META.HTTP_REFERER %}
+            <form class="preferences-form" action="/settings/" method="post">
+                <h2 class="preferences-form__title">Pick Your Pie</h2>
+                <div class="preferences-form__checkbox">                    
+                    <input type="checkbox" id="cheese" name="topping_preference" value="cheese" {% for toppingpref in topping_preference_list %}{% if toppingpref.user_id == request.session.id and toppingpref.topping_preference == 'cheese' %}checked="true"{% endif %}{%endfor %} />
+                    <label for="cheese">Cheese</label>                    
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="pepperoni" name="topping_preference" value="pepperoni" {% for toppingpref in topping_preference_list %}{% if toppingpref.user_id == request.session.id and toppingpref.topping_preference == 'pepperoni' %}checked="true"{% endif %}{% endfor %} />
+                    <label for="pepperoni">Pepperoni</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="Sausage" name="topping_preference" value="sausage" {% for toppingpref in topping_preference_list %}{% if toppingpref.user_id == request.session.id and toppingpref.topping_preference == 'sausage' %}checked="true"{% endif %}{% endfor %} />
+                    <label for="Sausage">Sausage</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="supreme" name="topping_preference" value="supreme" {% for toppingpref in topping_preference_list %}{% if toppingpref.user_id == request.session.id and toppingpref.topping_preference == 'supreme' %}checked="true"{% endif %}{% endfor %} />
+                    <label for="supreme">Supreme</label>
+                </div>
+                <div class="preferences-form__checkbox">
+                    <input type="checkbox" id="veggie" name="topping_preference" value="veggie" {% for toppingpref in topping_preference_list %}{% if toppingpref.user_id == request.session.id and toppingpref.topping_preference == 'veggie' %}checked="true"{% endif %}{% endfor %}  />
+                    <label for="veggie">Veggie</label>
+                </div>
+                <div class="preferences-folder">
+                    <a class="js-delivery-times-toggle preferences-folder__trigger">
+                        <img class="preferences-folder__arrow" src="{{STATIC_URL}}images/svgs/folder-arrow.svg" />
+                        <h3 class="preferences-folder__title">Edit Delivery Times</h3>
+                    </a>
+                    <div class="preferences-folder__content">
+                        <p class="preferences-folder__note">When do you want pizza?</p>
+                        <div class="preferences-form__radio-button">
+                            <input type="radio" id="when-always" name="time_preference" value="always" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'always' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                            <label class="js-time-selector-toggle" for="when-always">Always</label>
+                        </div>
+                        <div class="preferences-form__radio-button">
+                            <input type="radio" id="when-sometimes" name="time_preference" value="sometimes" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'sometimes' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                            <label class="js-time-selector-toggle" for="when-sometimes">Choose Times</label>
+                        </div>
+                        <div class="time-selector">
+                            <p class="preferences-folder__note">Choose your pizza times:</p>
+                            <!-- one of these blocks for each day -->
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="monday" name="time_preference" value="monday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'monday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="monday">Monday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-day" name="time_preference" value="monday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'monday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="monday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-evening" name="time_preference" value="monday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'monday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="monday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="monday-late" name="time_preference" value="monday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'monday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="monday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end of day block -->
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="tuesday" name="time_preference" value="tuesday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'tuesday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="tuesday">Tuesday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-day" name="time_preference" value="tuesday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'tuesday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="tuesday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-evening" name="time_preference" value="tuesday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'tuesday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="tuesday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="tuesday-late" name="time_preference" value="tuesday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'tuesday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="tuesday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="wednesday" name="time_preference" value="wednesday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'wednesday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="wednesday">Wednesday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-day" name="time_preference" value="wednesday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'wednesday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="wednesday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-evening" name="time_preference" value="wednesday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'wednesday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="wednesday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="wednesday-late" name="time_preference" value="wednesday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'wednesday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="wednesday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="thursday" name="time_preference" value="thursday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'thursday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="thursday">Thursday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-day" name="time_preference" value="thursday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'thursday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="thursday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-evening" name="time_preference" value="thursday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'thursday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="thursday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="thursday-late" name="time_preference" value="thursday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'thursday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="thursday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="friday" name="time_preference" value="friday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'friday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="friday">Friday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-day" name="time_preference" value="friday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'friday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="friday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-evening" name="time_preference" value="friday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'friday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="friday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="friday-late" name="time_preference" value="friday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'friday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="friday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="saturday" name="time_preference" value="saturday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'saturday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="saturday">Saturday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-day" name="time_preference" value="saturday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'saturday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %}  />
+                                        <label for="saturday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-evening" name="time_preference" value="saturday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'saturday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="saturday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="saturday-late" name="time_preference" value="saturday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'saturday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="saturday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="time-selector__block">
+                                <div class="time-selector__day">
+                                    <input type="checkbox" id="sunday" name="time_preference" value="sunday-all-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'sunday-all-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                    <label class="js-day-selector-toggle" for="sunday">Sunday all day (or click to select time)</label>
+                                </div>
+                                <div class="time-selector__times">
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-day" name="time_preference" value="sunday-day" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'sunday-day' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="sunday-day">11am-4pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-evening" name="time_preference" value="sunday-evening" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'sunday-evening' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="sunday-evening">4pm-9pm</label>
+                                    </div>
+                                    <div class="time-selector__time">
+                                        <input type="checkbox" id="sunday-late" name="time_preference" value="sunday-late" {% for timepref in time_preference_list %}{% if timepref.time_preference == 'sunday-late' and timepref.user_id == request.session.id %}checked="true"{% endif %}{% endfor %} />
+                                        <label for="sunday-late">9pm-1am</label>
+                                    </div>
+                                </div>
+                            </div>
+                           <input type="hidden" name="user_id" value="{{request.session.id}}" />
+                           {% csrf_token %}
+                        </div>
+                    </div>
+                </div>
+                <button class="preferences-form__button">Save Settings</button>
+                <a href="/settings/" class="preferences-form__button" style="text-align:center;">No Changes Needed</a>
+                <br />
+            </form>
+            {% else %}
+            <p id="response_to_user" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">Sorry, you are not allowed to access this page.</p>
+            {% endif %}
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 58 40" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-miterlimit:10;">
+    <g id="Page 6">
+        <g id="Layer 1">
+            <clipPath id="tag1">
+                <rect x="-91.5735" y="-691.559" width="642.501" height="1140.83"/>
+            </clipPath>
+            <g clip-path="url(#tag1)">
+                <rect x="-91.5735" y="-691.559" width="642.501" height="1140.83" style="fill:rgb(229,125,0);fill-rule:nonzero;"/>
+                <rect x="-91.0779" y="-41.4127" width="641.655" height="123.321" style="fill:none;stroke-width:0.98px;stroke:white;"/>
+                <rect x="0.972878" y="0.97561" width="56.4449" height="38.2517" style="fill:white;fill-rule:nonzero;"/>
+                <path d="M58.3973,0L0.00117073,0L0.00117073,40.2029L58.3973,40.2029L58.3973,0ZM56.4461,38.2517L1.95239,38.2517L1.95239,1.95122L56.4461,1.95122L56.4461,38.2517Z" style="fill:rgb(229,125,0);fill-rule:nonzero;"/>
+                <path d="M29.202,12.3095L56.0546,39.2363L2.34537,39.5134L29.202,12.3095Z" style="fill:white;fill-rule:nonzero;"/>
+                <path d="M29.198,10.926L0,40.4987L58.3961,40.2021L29.198,10.926ZM29.2059,13.6968L53.7171,38.2743L4.69073,38.5241L29.2059,13.6968Z" style="fill:rgb(229,125,0);fill-rule:nonzero;"/>
+                <path d="M2.92917,0.97561L55.4638,0.97561L29.1965,20.6361L2.92917,0.97561Z" style="fill:white;fill-rule:nonzero;"/>
+                <path d="M58.3961,0L2.84217e-14,0L29.198,21.8576L58.3961,0ZM52.5307,1.95122L29.198,19.4224L5.86146,1.95122L52.5307,1.95122Z" style="fill:rgb(229,125,0);fill-rule:nonzero;"/>
+            </g>
+        </g>
+    </g>
+</svg>

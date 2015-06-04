@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-settings"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="masthead">
+                <a class="masthead__back-button" href="login.html"><img class="masthead__back-image" src="/images/svgs/back-button.svg" alt="Go Back" /></a>
+                <h1 class="masthead__heading">Settings</h1>
+                <div class="masthead__logo-container"><img class="masthead__logo" src="/images/svgs/PI-logo-yellow-red.svg" alt="Pizza Impulse" /></div>
+            </header>
+            <nav class="settings-menu">
+                <ul>
+                    <li class="settings-menu__item"><a href="pizza-preferences.html"><span class="settings-menu__link settings-menu__icon--pizza">Edit Pizza &amp; Delivery Preferences</span></a></li>
+                    <li class="settings-menu__item"><a href="address-preferences.html"><span class="settings-menu__link settings-menu__icon--pin">Edit Delivery Address</span></a></li>
+                    <li class="settings-menu__item"><a href="payment-preferences.html"><span class="settings-menu__link settings-menu__icon--creditcard">Manage Payment Options</span></a></li>
+                    <!--<li class="settings-menu__item"><a class="settings-menu__link settings-menu__icon--book">History</a></li>-->
+                    <li class="settings-menu__item"><a href="contact.html"><span class="settings-menu__link settings-menu__icon--envelope">Contact Us</span></a></li>
+                    <!--<li class="settings-menu__item"><a class="settings-menu__link settings-menu__icon--star">Rate The App</a></li>-->
+                    <li class="settings-menu__item"><a href="user-preferences.html"><span class="settings-menu__link settings-menu__icon--padlock">Change Password</span></a></li>
+                </ul>
+            </nav>
+            <footer class="branded-footer">
+                <img class="branded-footer__name" src="/images/svgs/PI-white.svg" alt="Pizza Impulse" />
+            </footer>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="/build/bundle.min.js"></script>
+    </body>
+</html>

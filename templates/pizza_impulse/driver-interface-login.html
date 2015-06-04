@@ -1,0 +1,65 @@
+{% extends "merchant-home.html" %}
+
+{% block body %}
+<body onload="tabInputs()">
+<div class="jumbotron background_color_red">
+<h1 class="pi-brand">
+      <img class="pi-brand__logo img-responsive width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-logo.svg" alt="Pizza Impulse Logo" />
+      <img class="pi-brand__name img-responsive width_15_percent center-block" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse">
+</h1>
+<p class="text-center color_white">{{jumbotron_small_title}}</p>
+</div>
+<div class="container-fluid">
+<div class="row">
+<div id="driver_login_box" class="col-xs-12">
+<p class="text-center lead">PLEASE ENTER YOUR CELL PHONE NUMBER:</p>
+<form action="/driver-interface/" method="post" id="driver_login_form" onsubmit="return driverLogin();">
+<p class="text-center lead"><input type="number" name="cell_portion_1" placeholder="999" onkeyup="tabInputs()" class="input-lg text-center width_20_percent margin_top_30px" /> - <input type="number" name="cell_portion_2" placeholder="999" onkeyup="tabInputs()" class="input-lg text-center width_20_percent margin_top_30px" /> - <input type="number" name="cell_portion_3" placeholder="9999" onkeyup="tabInputs()"  class="input-lg text-center width_30_percent margin_top_30px" /></p> 
+{% csrf_token %}
+<input type="hidden" name="pizza_order_id" value="{{request.GET.pizza_order_id}}" />
+<input type="hidden" name="driver_id" value="{{request.GET.driver_id}}" />
+<input type="submit" id="driver_login_button" class="input-lg btn btn-primary center-block margin_top_30px" value="Log In" />
+<p id="driver_login_response" class="text-center text-danger margin_top_30px"></p>
+<p id="driver_login_response_2" class="text-center text-danger margin_top_30px">{{request.GET.permission_denied}}</p>
+<p id="logout_response" class="text-center text-primary margin_top_30px">{{request.GET.logout_confirmation}}</p>
+</form>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+function tabInputs(){
+if($("[name='cell_portion_1']").val().length==3){
+   $("[name='cell_portion_2']").focus();
+}
+if($("[name='cell_portion_2']").val().length==3){
+   $("[name='cell_portion_3']").focus();
+}
+if($("[name='cell_portion_3']").val().length==4){
+   $("#driver_login_button").focus();
+}    
+}
+
+function driverLogin(){
+    if($("[name='cell_portion_1']").val().length!=3){
+        $("#driver_login_response").html("The first field needs to contain 3 numeric digits");
+        return false;
+    }
+    else if($("[name='cell_portion_2']").val().length!=3){
+        $("#driver_login_response").html("The second field needs to contain 3 numeric digits");
+        return false;
+    }
+    else if($("[name='cell_portion_3']").val().length!=4){
+        $("#driver_login_response").html("The third field needs to contain 4 numeric digits");
+        return false;
+    }
+}
+
+
+
+</script>
+{% endblock %}
+

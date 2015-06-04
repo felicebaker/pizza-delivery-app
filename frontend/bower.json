@@ -1,0 +1,19 @@
+{
+  "name": "pizza-impulse",
+  "version": "0.1.0",
+  "authors": [
+    "Chris Batchelor <chris@firegoby.com>"
+  ],
+  "description": "Pizza Impulse Web Frontend",
+  "license": "copyrighted",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

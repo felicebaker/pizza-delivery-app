@@ -1,0 +1,90 @@
+from django.shortcuts import render
+from django.views.generic import TemplateView
+from django.http import HttpRequest, HttpResponse
+from users.sign_up_2_form import SignUp2Form
+from users.models import Users
+from authorizenet.cim import add_profile
+from authorizenet.models import CIMResponse
+from datetime import date
+from topping_preferences.models import ToppingPreferences
+from topping_preferences.topping_preference_form import ToppingFormSet
+from time_preferences.models import TimePreferences
+from time_preferences.time_preference_form import TimePreferencesForm
+
+
+class HomePageView(TemplateView):
+    template_name = "index.html"
+
+class SignUp1View(TemplateView):
+    template_name = "signup1.html"
+
+class LogInView(TemplateView):
+    template_name = "login.html"
+
+def sign_up_2_view(request):
+    if request.method == 'POST':
+        request.session['first_name'] = request.POST['first_name']
+        request.session['last_name'] = request.POST['last_name']
+        request.session['email'] = request.POST['email']
+        request.session['password'] = request.POST['password']
+        return render(request, "signup2.html")
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+def sign_up_3_view(request):
+    if request.method == 'POST':
+        request.session['address'] = request.POST['address']
+        request.session['city'] = request.POST['city']
+        request.session['state'] = request.POST['state']
+        request.session['zip'] = request.POST['zip']
+        request.session['phone'] = request.POST['phone']
+        f = SignUp2Form(request.POST)
+        sign_up_2_save = f.save()
+        if sign_up_2_save:
+            get_session_id = Users.objects.get(email = request.session['email'], password = request.session['password'])
+            request.session['id'] = get_session_id.id
+            return render(request, "signup3.html")
+           
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+    return render(request, 'signup3.html', {'form': f})
+
+
+def sign_up_4_view(request):
+    if request.method == 'POST':
+        get_current_customer = Users.objects.get(email = request.session['email'], password = request.session['password'])
+        customer_id = get_current_customer.id
+        company = ""
+        country = ""
+        fax_number = ""
+        expiration_date = date(int(request.POST['year']), int(request.POST['month']), 1)
+        billing_fields = {'firstName':request.session['first_name'], 'lastName': request.session['last_name'], 'company': company, 'address':request.session['address'], 'city':request.session['city'], 'state':request.session['state'], 'zip':request.session['zip'], 'country':country, 'phoneNumber':request.session['phone'], 'faxNumber':fax_number}
+        credit_card_fields = {'cardNumber':request.POST['ccnumber'], 'expirationDate':expiration_date, 'cardCode':request.POST['seccode']}
+        add_customer_profile = add_profile(customer_id, credit_card_fields, billing_fields, shipping_form_data=None, customer_email=None, customer_description=None)        
+        transaction_response = CIMResponse.objects.get(id = customer_id)
+        if transaction_response.result == "Ok":
+            return render(request, 'signup4.html')
+        else:
+            return HttpResponse("There was an error in processing this transaction - Error Code: "+transaction_response.result_code)
+ 
+    else:
+        return HttpResponse("You are not allowed to view this page")
+
+
+def manage_topping_preferences(request, user_id):    user = Users.objects.get(pk=id)
+    ToppingFormSet = inlineformset_factory(Users, ToppingPreferences, fields=('topping_preference','user_id',))
+    if request.method == "POST":
+        formset = ToppingsInlineFormSet(request.POST, instance=user)
+        if formset.is_valid():
+            formset.save()            
+            return render(request, 'settings.html')
+        else:
+            formset = ToppingFormSet(instance=user)
+
+    return render_to_response("settings.html", {"formset": formset})        
+              
+
+
+
+                          

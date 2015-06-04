@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-signup"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="staged-header">
+                <div class="staged-header__pizza"><img src="{{STATIC_URL}}images/svgs/stage3.svg" alt="Stage 3 of 4"/></div>
+                <h1 class="staged-header__title">Credit Card Information</h1>
+            </header>
+            <!-- change form method to POST in Django, just get here for static HTML mockup flow for client preview -->
+            <form class="preferences-form" action="/signup4/" method="post" onsubmit="return formValidation();">
+                <input class="preferences-form__input" type="text" name="name" placeholder="Name on Credit Card" />
+                <input class="preferences-form__input--cc js-creditcard-autotab" type="number" id="ccnumber1" name="ccnumber1" placeholder="1234" />
+                <input class="preferences-form__input--cc js-creditcard-autotab" type="number" id="ccnumber2" name="ccnumber2" placeholder="1234" />
+                <input class="preferences-form__input--cc js-creditcard-autotab" type="number" id="ccnumber3" name="ccnumber3" placeholder="1234" />
+                <input class="preferences-form__input--cc js-creditcard-autotab" type="number" id="ccnumber4" name="ccnumber4" placeholder="1234" />
+                <div class="preferences-form__dropdown">
+                    <div class="preferences-form__dropdown-trigger"></div>
+                    <select class="preferences-form__dropdown-select" name="month" id="month" size="1">
+                        <!--<option value="" class="preferences-form__select-placeholder" disabled selected style="display:none;">Month</option>-->
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+                </div>
+                <input class="preferences-form__input preferences-form__input--half js-creditcard-year" type="number" id="year" name="year" placeholder="Year" />
+                <p class="preferences-form__error-note">Must be full 4 digit year</p>
+                <input class="preferences-form__input js-creditcard-pin" type="number" name="seccode" placeholder="Security Code" />
+                <p class="preferences-form__error-note">Must be 3 or 4 digits</p>
+                {% csrf_token %}
+                <button class="preferences-form__button">Next</button>
+                <p style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">{{request.GET.response}}</p>
+                <p id="form_validation_response" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;"></p>
+            </form>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+         <script>
+        function formValidation(){
+            var fields = ["name","ccnumber1","ccnumber2","ccnumber3","ccnumber4","month","year","seccode"];
+            for(i=0;i<fields.length;i++){
+                if($("[name='"+fields[i]+"']").val().length==0){
+                    if(fields[i].slice(0,8)=="ccnumber"){
+                    $("#form_validation_response").html("credit card field is not properly formatted");
+                    return false;
+                    }
+                    else{
+                    $("#form_validation_response").html(fields[i]+" field is blank");
+                    return false;
+                    }
+                }
+            }
+            
+                    if((String($("[name='ccnumber1']").val()).slice(0,1)>=0)&&(String($("[name='ccnumber1']").val()).slice(1,2)>=0)&&(String($("[name='ccnumber1']").val()).slice(2,3)>=0)&&(String($("[name='ccnumber1']").val()).slice(3,4)>=0)){
+                         if((String($("[name='ccnumber2']").val()).slice(0,1)>=0)&&(String($("[name='ccnumber2']").val()).slice(1,2)>=0)&&(String($("[name='ccnumber2']").val()).slice(2,3)>=0)&&(String($("[name='ccnumber2']").val()).slice(3,4)>=0)){
+                             if((String($("[name='ccnumber3']").val()).slice(0,1)>=0)&&(String($("[name='ccnumber3']").val()).slice(1,2)>=0)&&(String($("[name='ccnumber3']").val()).slice(2,3)>=0)&&(String($("[name='ccnumber3']").val()).slice(3,4)>=0)){
+                                 if((String($("[name='ccnumber4']").val()).slice(0,1)>=0)&&(String($("[name='ccnumber4']").val()).slice(1,2)>=0)&&(String($("[name='ccnumber4']").val()).slice(2,3)>=0)&&((String($("[name='ccnumber4']").val()).slice(3,4)>=0)||(String($("[name='ccnumber4']").val()).slice(3,4)==""))){
+                                     return true;
+                                 }
+                                 else{
+                                     $("#form_validation_response").html("Please enter a valid credit card number");
+                                     return false;
+                                 }
+                             }
+                             else{
+                                 $("#form_validation_response").html("Please enter a valid credit card number");
+                                 return false;
+                             }
+                         }
+                         else{
+                             $("#form_validation_response").html("Please enter a valid credit card number");
+                             return false;
+                         }
+                    }
+                    else{
+                        $("#form_validation_response").html("Please enter a valid credit card number");
+                        return false;
+                    }
+                
+            }
+
+        </script>
+    </body>
+</html>

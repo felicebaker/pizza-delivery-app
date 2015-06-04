@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<body onload="setTimer()">
+<p id="timer_para" class="lead"><span id="timer_begin" class="text-success"></span> | <span id="timer_now" class="text-warning"></span> | <span id="timer_end" class="text-danger"></span></p>
+{% csrf_token %}
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script>
+function setTimer(){
+    var colon = "<span class='text-info'> : </span>";
+    var begin_time = {{spec_pizza_vetting_begin}};
+    var get_begin_time = addLeadingZero(new Date(begin_time).getHours())+colon+addLeadingZero(new Date(begin_time).getMinutes())+colon+addLeadingZero(new Date(begin_time).getSeconds());
+    var now_time = new Date().getTime();
+    var get_now_time = addLeadingZero(new Date(now_time).getHours())+colon+addLeadingZero(new Date(now_time).getMinutes())+colon+addLeadingZero(new Date(now_time).getSeconds());
+    var end_time = {{spec_pizza_vetting_end}};
+    var get_end_time = addLeadingZero(new Date(end_time).getHours())+colon+addLeadingZero(new Date(end_time).getMinutes())+colon+addLeadingZero(new Date(end_time).getSeconds());
+    $("#timer_begin").html(get_begin_time);
+    $("#timer_now").html(get_now_time);
+    $("#timer_end").html(get_end_time);
+}
+
+function addLeadingZero(number){
+    if(number<10){
+        return "0"+number;
+    }
+    else{
+        return number;
+    }
+}
+</script>
+</html>

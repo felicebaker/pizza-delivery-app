@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-user-preferences"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="masthead">
+                <a class="masthead__back-button" href="settings.html"><img class="masthead__back-image" src="/images/svgs/back-button.svg" alt="Go Back" /></a>
+                <h1 class="masthead__heading">Payment Details</h1>
+                <div class="masthead__logo-container"><img class="masthead__logo" src="/images/svgs/PI-logo-yellow-red.svg" alt="Pizza Impulse" /></div>
+            </header>
+            <form class="preferences-form" action="#" method="post">
+                <input class="preferences-form__input" name="name" placeholder="Name on Credit Card" />
+                <input class="preferences-form__input" name="ccnumber" placeholder="CC Number" />
+                <input class="preferences-form__input preferences-form__input--half" name="month" placeholder="Month" />
+                <input class="preferences-form__input preferences-form__input--half" name="year" placeholder="Year" />
+                <input class="preferences-form__input" name="seccode" placeholder="3-Digit Security Code" />
+                <button class="preferences-form__button">Next</button>
+            </form>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="/vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="/build/bundle.min.js"></script>
+    </body>
+</html>

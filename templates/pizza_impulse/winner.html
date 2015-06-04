@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}/build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-winner"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+        <div class="middle-stripe"></div>
+        <article class="result-box">
+            <h1 class="result-box__sorry">Winner!</h1>
+            <img class="result-box__logo" src="{{STATIC_URL}}/images/svgs/PI-logo-yellow-red.svg" alt="Pizza Impulse" />
+            <p class="result-box__detail">Your pizza is on its way!</p>
+            <a class="result-box__exit-button" onclick="logOut()">OK</a>
+        </article>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}/vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}/build/bundle.min.js"></script>
+        <script>
+         function logOut(){
+            window.location.replace("/login/");
+        }
+        </script>
+    </body>
+</html>

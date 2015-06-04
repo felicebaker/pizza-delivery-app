@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>
+    </head>
+    <body class="page-signup"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="staged-header">
+                <div class="staged-header__pizza"><img src="{{STATIC_URL}}images/svgs/stage2.svg" alt="Stage 2 of 4"/></div>
+                <h1 class="staged-header__title">Delivery Address</h1>
+            </header>
+            <!-- change form method to POST in Django, just get here for static HTML mockup flow for client preview -->
+            <form class="preferences-form" action="/signup3/" method="post" onsubmit="return formValidation();">
+                <input class="preferences-form__input" name="address" placeholder="Address" />
+                <input class="preferences-form__input" name="address2" placeholder="Apartment # (if any)" />
+                <input class="preferences-form__input" name="city" placeholder="City" />
+                <input class="preferences-form__input preferences-form__input--half" name="state" placeholder="State" />
+                <input class="preferences-form__input preferences-form__input--half" name="zip" placeholder="Zip" />
+                <input class="preferences-form__input" name="phone" placeholder="Phone Number" />
+                <input type="hidden" name="first_name" value="{{request.session.first_name}}" />
+                <input type="hidden" name="last_name" value="{{request.session.last_name}}" />
+                <input type="hidden" name="email" value="{{request.session.email}}" />
+                <input type="hidden" name="password" value="{{request.session.password}}" />                                   
+                {% csrf_token %}
+                <button class="preferences-form__button">Next</button>
+                <p style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;">{{request.GET.response}}</p>
+                <p id="form_validation_response" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;"></p>
+            </form>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+         <script>
+        function formValidation(){
+            var fields = ["address","city","state","zip","phone"];
+            for(i=0;i<fields.length;i++){
+                if($("[name='"+fields[i]+"']").val().length==0){
+                    $("#form_validation_response").html(fields[i]+" field is blank");
+                    return false;
+                }
+            }
+            
+                    if(($("[name='phone']").val().length==12)&&($("[name='phone']").val().slice(0,1)>=0)&&($("[name='phone']").val().slice(1,2)>=0)&&($("[name='phone']").val().slice(2,3)>=0)&&($("[name='phone']").val().slice(3,4)=="-")&&($("[name='phone']").val().slice(4,5)>=0)&&($("[name='phone']").val().slice(5,6)>=0)&&($("[name='phone']").val().slice(6,7)>=0)&&($("[name='phone']").val().slice(7,8)=="-")&&($("[name='phone']").val().slice(8,9)>=0)&&($("[name='phone']").val().slice(9,10)>=0)&&($("[name='phone']").val().slice(10,11)>=0)&&($("[name='phone']").val().slice(11,12)>=0)){
+                        return true;
+                    }
+                    else{
+                        $("#form_validation_response").html("The phone number provided does not fit the 111-222-3333 format.");
+                        return false;
+                    }
+                
+            }
+
+        </script>
+
+        
+
+    </body>
+</html>

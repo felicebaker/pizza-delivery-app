@@ -1,0 +1,63 @@
+// For a nice explanation of how this grid system is implemented see:
+// http://palantir.net/blog/responsive-design-s-dirty-little-secret
+
+// Creates a hanging line, aka a row
+line(mode = normal, leading = $grid-default-leading)
+    clearfix()
+    clear both
+    position relative
+    margin-bottom leading
+    if mode is 'nested'
+        margin-bottom 0 !important
+        padding-left 0 !important
+        padding-right 0 !important
+
+// Creates a single unit, aka a column
+unit(cols, total = $grid-default-cols, position = auto, gutter = $grid-default-gutter, float = left)
+    float float
+    clear none
+    width (cols / total) * 100%
+    padding 0 (gutter / 2)
+    if position is 'auto'
+        &:last-child
+            float right
+    else
+        offset = (position - 1) / total * 100%
+        if float is 'left'
+            margin-left offset
+            margin-right -100%
+        else if float is 'right'
+            margin-right offset
+
+// Creates a unit definition FROM a particular breakpoint and up
+unit-from(breakpoint, cols, total, position = auto, gutter = $grid-default-gutter, float = left)
+    +from(breakpoint)
+        unit(cols, total, position, gutter, float)
+
+// Creates a unit definition ONLY on a particular breakpoint
+unit-only(breakpoint, cols, total, position = auto, gutter = $grid-default-gutter, float = left)
+    +only(breakpoint)
+        unit(cols, total, position, gutter, float)
+
+// Creates a unit definition BELOW on a particular breakpoint
+unit-below(breakpoint, cols, total, position = auto, gutter = $grid-default-gutter, float = left)
+    +below(breakpoint)
+        unit(cols, total, position, gutter, float)
+
+// (Optional) Assign to first columns to make flush with container left edge
+unit-first()
+    padding-left 0 !important
+
+// (Optional) Assign to last columns to make flush with container right edge
+unit-last()
+    padding-right 0 !important
+
+// Add a keyline between units, a vertical line between columns
+keyline(n, color = #555)
+    border-right 1px solid color
+    &:nth-child(n)
+        border 0
+
+// Cancel a previously set keyline - useful for use with unit-only()
+no-keyline()
+    border-right 0

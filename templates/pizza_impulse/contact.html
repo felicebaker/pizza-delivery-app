@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta http-equiv="cleartype" content="on" />
+        <title>Pizza Impulse</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="{{STATIC_URL}}build/main.min.css" />
+        <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'/>        
+    </head>
+    <body class="page-settings" onload="contactFormSubmit()"><!-- per page class = 'page-' + 'template_name' -->
+        <div class="container" role="main">
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - START -->
+            <header class="masthead">
+                <a class="masthead__back-button" href="/settings/"><img class="masthead__back-image" src="{{STATIC_URL}}images/svgs/back-button.svg" alt="Go Back" /></a>
+                <h1 class="masthead__heading">Contact Us</h1>
+                <div class="masthead__logo-container"><img class="masthead__logo" src="{{STATIC_URL}}images/svgs/PI-logo-yellow-red.svg" alt="Pizza Impulse" /></div>
+            </header>
+            <!--<form class="contact-form" action="/settings/" method="post">-->
+                <h2 class="contact-form__title" style="text-align:center;">Drop Us a Line!</h2>
+                <input type="hidden" name="first_name" value="{{first_name}}" />
+                <input type="hidden" name="last_name" value="{{last_name}}" />
+                <input type="hidden" name="email" value="{{email}}" />
+                <textarea class="contact-form__body" name="contact_body" placeholder="Comments, Questions, Suggestions"></textarea>
+                {% csrf_token %}
+                <button id="contact_form_submit" class="contact-form__button">Submit</button>
+                <p id="response_span" style="left:15%;width:70%;color:#FFFFFF;font-family: Century Gothic, Apple Gothic,sans-serif;font-weight:bold;text-align:center;margin-top:30px;position:relative;"></p>
+                <button id="previous_link" class="contact-form__button" style="margin-top:30px;"><a href="/settings/">Go Back To Settings</a></button>
+            <!--</form>-->
+            <footer class="branded-footer">
+                <img class="branded-footer__logo" src="{{STATIC_URL}}images/svgs/PI-logo-yellow-white.svg" alt="Pizza impulse Logo" />
+                <img class="branded-footer__name" src="{{STATIC_URL}}images/svgs/PI-white.svg" alt="Pizza Impulse" />
+            </footer>
+        <!-- DJANGO VIEW TEMPLATE BOUNDARIES - END -->
+        </div>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="{{STATIC_URL}}vendor/jquery-2.1.1.min.js"><\/script>')</script>
+        <script src="{{STATIC_URL}}build/bundle.min.js"></script>
+        <script>
+        function contactFormSubmit(){
+            $("#contact_form_submit").on("click", function(){
+                $.post("/contact-form-handler/",{
+                    first_name:$("[name='first_name']").val(),
+                    last_name:$("[name='last_name']").val(),
+                    email:$("[name='email']").val(),
+                    contact_body:$("[name='contact_body']").val(),
+                    csrfmiddlewaretoken:$("[name='csrfmiddlewaretoken']").val(),
+                }, function(data){
+                       console.log(data)
+                       if(data == "email sent"){
+                           $("[name='contact_body']").val("");
+                           $("#response_span").html("Thank you for your message, we will respond to you as soon as possible!");
+                       }
+                       else if(data == "email not sent"){
+                           $("#response_span").html("There was an issue with sending your email.");
+                       }                       
+                });
+            });        
+        }
+        </script>
+    </body>
+</html>

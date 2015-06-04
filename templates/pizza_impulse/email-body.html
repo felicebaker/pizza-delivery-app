@@ -1,0 +1,103 @@
+{% block tophalf %}
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en" "http://www.w3.org/tr/rec-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
+    <style>
+        a {
+            color: #ac222a;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body style="padding: 0; width: 100% !important; -webkit-text-size-adjust: 100%; margin: 0; -ms-text-size-adjust: 100%;" marginheight="0" marginwidth="0">
+<center>
+    <table cellpadding="0" cellspacing="0" style="*width: 540px; padding: 0; width: 100% !important; background: #ffffff; margin: 0; background-color: #ffffff;" border="0">
+        <tr>
+            <td valign="top">
+                <table cellpadding="0" cellspacing="0" style="border-top: 6px #ac222a solid;background-color:#f2f2f2;" border="0" align="center">
+                    <tr>
+                        <td colspan="3" height="36">
+                        </td>
+                    </tr>
+                    <tr style="line-height: 0px;">
+                        <td width="100%" style="font-size: 0px;" align="center" height="1">
+                            <img width="200px" style="max-height: 100px; width: 200px; *width: 200px; *height: 100px;" alt="Pizza Impulse" src="{{STATIC_URL}}images/email.png">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table cellpadding="0" cellspacing="0" style="line-height: 25px;" border="0" align="center">
+                                <tr>
+                                    <td colspan="3" height="30">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="36">
+                                    </td>
+                                    <td width="454" align="left" style="color: #444444; border-collapse: collapse; font-size: 10pt; font-family: 'lucida grande', 'segoe ui', arial, verdana, 'lucida sans unicode', tahoma, 'sans serif'; max-width: 454px;" valign="top">
+                                        {% endblock %}
+                                        {% block content %}                                       
+                                        {% autoescape off %}
+                                        {{ main_message }}                                      
+                                        {% endautoescape %}
+                                        {% endblock %}
+                                        {% block closing_message %}
+                                        {% autoescape off %}
+                                        {{outer_email_signature}}
+                                        {% endautoescape %}
+                                        {% endblock %}
+                                        {% block bottomhalf %}
+                                    </td>
+                                    <td width="36">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" height="36">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+                <table cellpadding="0" cellspacing="0" align="center" border="0">
+                    <tr>
+                        <td width="36">&nbsp;</td>
+                        <td style="padding: 0; border-collapse: collapse;background-color:#072626">
+                            
+                            <table cellpadding="0" cellspacing="0" style="line-height: 25px;" border="0" align="center">
+                                <tr>
+                                    <td colspan="3" height="15">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="36">
+                                    </td>
+                                    <td width="454" align="left" style="color: #eeeeee; border-collapse: collapse; font-size: 7pt; font-family: 'Lucida Grande', 'Segoe UI', Arial, Verdana, 'Lucida Sans Unicode', Tahoma, 'Sans Serif'; max-width: 454px;" valign="top">
+                                        {% if request.session.first_name|length > 0 %}
+                                            Email sent to <strong>{{ recipient.email }}</strong> because an account was created at <strong>{{ SITE_PATH }}</strong>
+                                            <br>
+                                            <a href="{{ SITE_PATH }}{% url "unsubscribe" token=recipient.get_unsubscribe_token %}" style="font-weight:bold">Click here to unsubscribe</a>
+                                        {% endif %}
+                                        <br><strong>Pizza Impulse, Inc.</strong> 123 Legal Address, California 12001
+                                    </td>
+                                    <td width="36">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" height="15">
+                                    </td>
+                                </tr>
+                            </table>
+                           
+                        </td>
+                        <td width="36">&nbsp;</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</center>
+</body>
+</html>
+{% endblock %}
