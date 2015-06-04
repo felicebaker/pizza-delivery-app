@@ -4,7 +4,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-     ('felice', 'felicebaker2009@u.northwestern.edu'),
+     ('########################', '##############################'),
 )
 
 MANAGERS = ADMINS
@@ -13,8 +13,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'pizza_impulse_database',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '127sevenover2',                  # Not used with sqlite3.
+        'USER': '############',                      # Not used with sqlite3.
+        'PASSWORD': '############',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '3306',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -81,7 +81,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'u5#a5b^c6c2^*a+^@3n!-q!kjnl#$l-h_%cw-j=j2!^q8nhw#5'
+SECRET_KEY = '#######################################'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -174,7 +174,7 @@ LOGGING = {
     }
 }
 
-ALLOWED_HOSTS = ['http://pizzaapp.zpstage.com','pizzaapp.zpstage.com']
+ALLOWED_HOSTS = ['#######################','########################']
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.auth.context_processors.auth",
@@ -189,31 +189,29 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 
 AUTHNET_DEBUG = True
 
-AUTHNET_LOGIN_ID = "8PT243dsqh"
+AUTHNET_LOGIN_ID = "##################"
 
-AUTHNET_TRANSACTION_KEY = "6S2H4k4RLnkEx857"
+AUTHNET_TRANSACTION_KEY = "###################"
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'zprocess.fbaker@gmail.com'
-EMAIL_HOST_PASSWORD = 'Utocemhzombie478'
+EMAIL_HOST_USER = '############'
+EMAIL_HOST_PASSWORD = '############'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-TWILIO_ACCOUNT_SID = "AC836bfd26583c521a802d98e65e45b593"
+TWILIO_ACCOUNT_SID = "###############################"
 
-TWILIO_AUTH_TOKEN = "b8e237775647f4be174e36aaf307d0d9"
+TWILIO_AUTH_TOKEN = "###############################"
 
-TWILIO_FROM_NUMBER = "6036767211"
+TWILIO_FROM_NUMBER = "##########"
 
 TWILIO_DEFAULT_CALLERID = "Pizza Impulse"
-
-ADMINS = ('Felice Baker', 'zprocess.fbaker@gmail.com')
 
 #Custom settings variables begin here:
 
 # EMAIL_RECIPIENT_CONTACT_FORM should be set to the party at Pizza Impulse
 # who will be checking user messages sent in through the contact form.
-EMAIL_RECIPIENT_CONTACT_FORM = "felicebaker2009@u.northwestern.edu"
+EMAIL_RECIPIENT_CONTACT_FORM = "###############################"
 
 # OUTER_EMAIL_SIGNATURE goes on the bottom of all out-going emails to users,
 # and should be set to a string of HTML tags with inline styles. Don't worry
@@ -225,7 +223,7 @@ COMPANY_OFFICIAL_NAME = "Pizza Impulse, Inc."
 
 PHYSICAL_ADDRESS_1 = "123 Legal Address"
 
-PHYSICAL_ADDRESS_2 = "Santa Cruz, CA 90909"
+PHYSICAL_ADDRESS_2 = "########################"
 
 # SPECULATION_PIZZA_MARKET_RADIUS_MAX is the maximum number of miles from a
 # primary delivery address that a merchant will search for speculation pizza
